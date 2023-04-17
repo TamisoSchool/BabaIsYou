@@ -4,7 +4,7 @@ import java.awt.*;
 public interface MovingObject {
     void update(Point speed);
 
-    boolean isMoving();
+    boolean is_moving();
 
     JComponent getComp();
 }

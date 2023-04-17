@@ -44,12 +44,17 @@ public class GameObject extends JComponent implements MovingObject {
         this.y += speed.y;
         setBounds(x, y, width, height);
         if(speed.x != 0 || speed.y != 0)
-            quads.get(0).updateObject(this);
+            quads.get(0).update_object(this);
         repaint();
     }
-
+    public void destroy(){
+        for (Quadtree q: quads)
+            q.remove(this);
+        this.width = 0;
+        this.height = 0;
+    }
     @Override
-    public boolean isMoving() {
+    public boolean is_moving() {
         return false;
     }
 

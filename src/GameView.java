@@ -23,7 +23,7 @@ public class GameView extends JFrame {
 
     }
 
-    public void Add_Objects(ArrayList<GameObject> gameObjects) {
+    public void add_objects(ArrayList<GameObject> gameObjects) {
         Point p = new Point(0,0);
         for (int i = 0; i < gameObjects.size(); i++) {
             gameObjects.get(i).update(p);
@@ -35,6 +35,6 @@ public class GameView extends JFrame {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        LineRenderer.drawBorderRectangle(g, this.quads);
+        LineRenderer.draw_border_rectangle(g, this.quads);
     }
 }

@@ -1,8 +1,5 @@
-import org.w3c.dom.css.Rect;
-
 import java.awt.*;
 import java.util.*;
-import java.util.AbstractMap.SimpleEntry;
 
 public class Quadtree {
     private static final int MAX_OBJECTS = 10;
@@ -22,7 +19,7 @@ public class Quadtree {
 
     }
 
-    public Rectangle getBounds() {
+    public Rectangle get_bounds() {
         return bounds;
     }
 
@@ -51,7 +48,7 @@ public class Quadtree {
     }
 
 
-    private void addToIntersectingChildren(GameObject objectToAdd){
+    private void add_to_intersecting_children(GameObject objectToAdd){
         if(nodes[0] == null)
             return;
         for (Quadtree child : nodes){
@@ -64,7 +61,7 @@ public class Quadtree {
     public void insert(GameObject gObject) {
 
         if (nodes[0] != null) {
-            this.addToIntersectingChildren(gObject);
+            this.add_to_intersecting_children(gObject);
             return;
         }
 
@@ -76,7 +73,7 @@ public class Quadtree {
                     GameObject ob = iterator.next();
                     ob.quads.remove(this);
 
-                    addToIntersectingChildren(ob);
+                    add_to_intersecting_children(ob);
             }
             this.insert(gObject);
         }
@@ -97,18 +94,18 @@ public class Quadtree {
         }
         insert(gObject);
     }
-    public ArrayList<GameObject> RetrieveObjectsInVicinity(Rectangle searchArea) {
-        if (!getBounds().contains(searchArea)) {
+    public ArrayList<GameObject> retrieve_objects_in_vicinity(Rectangle searchArea) {
+        if (!get_bounds().contains(searchArea)) {
             if (parentNode == null)
                 return null;
 
-            return parentNode.RetrieveObjectsInVicinity(searchArea);
+            return parentNode.retrieve_objects_in_vicinity(searchArea);
         }
-        return allGameObject(searchArea);
+        return all_gameObject(searchArea);
 
     }
 
-    public void updateObject(GameObject gameObject) {
+    public void update_object(GameObject gameObject) {
         Quadtree quad = gameObject.quads.get(0);
         for (int i = 0; i < gameObject.quads.size(); i++){
             gameObject.quads.get(i).objects.remove(gameObject);
@@ -117,42 +114,45 @@ public class Quadtree {
         quad.insert_Intersecting(gameObject);
     }
 
-    public ArrayList<Rectangle> allRect(){
+    public ArrayList<Rectangle> all_rect(){
         ArrayList<Rectangle> rects = new ArrayList<>();
-        rects.add(getBounds());
+        rects.add(get_bounds());
         if(nodes[0] != null) {
-            rects.addAll(nodes[0].allRect());
-            rects.addAll(nodes[1].allRect());
-            rects.addAll(nodes[2].allRect());
-            rects.addAll(nodes[3].allRect());
+            rects.addAll(nodes[0].all_rect());
+            rects.addAll(nodes[1].all_rect());
+            rects.addAll(nodes[2].all_rect());
+            rects.addAll(nodes[3].all_rect());
         }
         return rects;
     }
-    public  ArrayList<GameObject> allGameObject(){
+    public  ArrayList<GameObject> all_gameObject(){
         ArrayList<GameObject> gameObjects = new ArrayList<>(objects);
         if(nodes[0] != null) {
-            gameObjects.addAll(nodes[0].allGameObject());
-            gameObjects.addAll(nodes[1].allGameObject());
-            gameObjects.addAll(nodes[2].allGameObject());
-            gameObjects.addAll(nodes[3].allGameObject());
+            gameObjects.addAll(nodes[0].all_gameObject());
+            gameObjects.addAll(nodes[1].all_gameObject());
+            gameObjects.addAll(nodes[2].all_gameObject());
+            gameObjects.addAll(nodes[3].all_gameObject());
         }
         return gameObjects;
     }
-    public ArrayList<GameObject> allGameObject(Rectangle rect){
+    public ArrayList<GameObject> all_gameObject(Rectangle rect){
         Set<GameObject> gameObjects = new HashSet<>(objects);
         if(nodes[0] != null) {
             if(rect.intersects(nodes[0].bounds))
-                gameObjects.addAll(nodes[0].allGameObject(rect));
+                gameObjects.addAll(nodes[0].all_gameObject(rect));
 
             if(rect.intersects(nodes[1].bounds))
-                gameObjects.addAll(nodes[1].allGameObject(rect));
+                gameObjects.addAll(nodes[1].all_gameObject(rect));
 
             if(rect.intersects(nodes[2].bounds))
-                gameObjects.addAll(nodes[2].allGameObject(rect));
+                gameObjects.addAll(nodes[2].all_gameObject(rect));
 
             if(rect.intersects(nodes[3].bounds))
-                gameObjects.addAll(nodes[3].allGameObject(rect));
+                gameObjects.addAll(nodes[3].all_gameObject(rect));
         }
         return new ArrayList<>(gameObjects);
+    }
+    public void remove(GameObject ob){
+        this.objects.remove(ob);
     }
 }

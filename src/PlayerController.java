@@ -8,20 +8,23 @@ public class PlayerController implements KeyListener, MovingObject {
     private final int rayCastLine = 1;
     private final GameObject rayCast;
     GameObject playerObject;
-    GameModel modeL;
+    GameModel model;
     Point point_speed = new Point(0, 0);
     boolean blocked = false;
     Point point_speed_last_update = new Point(0, 0);
     ArrayList<Integer> dir = new ArrayList<Integer>();
 
     public PlayerController(GameModel model) {
-        this.modeL = model;
+        this.model = model;
         playerObject = new GameObject(100, 100, ObjectType.Player, Color.RED);
         rayCast = new GameObject(10, 10, ObjectType.Wall, 10, 10, Color.GREEN);
-        this.modeL.TestAddObject(rayCast);
+        this.model.test_add_object(rayCast);
 
-        model.Attach_Object(this);
-        model.Attach_KeyListener(this);
+        Timer gameUpdate = new Timer(10, e -> {
+            this.update(new Point(0,0));
+        });
+        gameUpdate.start();
+        model.attach_keyListener(this);
     }
 
     @Override
@@ -79,7 +82,7 @@ public class PlayerController implements KeyListener, MovingObject {
         }
     }
 
-    private Rectangle RaycastObject(Rectangle origin, Point direction) {
+    private Rectangle raycast_object(Rectangle origin, Point direction) {
         int width = rayCastLine * Math.abs(direction.x) + Math.abs(direction.y) * GameModel.objectWidth;
         int height = GameModel.objectHeight * Math.abs(direction.x) + Math.abs(direction.y) * rayCastLine;
 
@@ -100,9 +103,9 @@ public class PlayerController implements KeyListener, MovingObject {
 
     @Override
     public void update(Point point) {
-        if (isMoving()) {
+        if (is_moving()) {
 
-            Rectangle playerRayCast = RaycastObject(playerObject.getRectangle(), point_speed);
+            Rectangle playerRayCast = raycast_object(playerObject.getRectangle(), point_speed);
             blocked = false;
 
             this.rayCast.height = playerRayCast.height;
@@ -113,13 +116,13 @@ public class PlayerController implements KeyListener, MovingObject {
             this.rayCast.repaint();
 
 
-            ArrayList<GameObject> intersecting = this.modeL.Intersect(playerRayCast, playerObject.quads.get(0));
+            ArrayList<GameObject> intersecting = this.model.intersect(playerRayCast, playerObject.quads.get(0));
 
             ArrayList<GameObject> objectsToUpdatePush = new ArrayList<>();
             if(intersecting != null) {
                 for (GameObject ob : intersecting // loop objects that intersect with player
                 ) {
-                    ObjectStatus status = this.modeL.getObjectStatus(ob.type);
+                    ObjectStatus status = this.model.getObjectStatus(ob.type);
                     if (status.isFloat)
                         continue;
 
@@ -131,7 +134,7 @@ public class PlayerController implements KeyListener, MovingObject {
                     if (!status.isPushable && !blocked) {
                         blocked = true;
                     } else if (status.isPushable && !blocked) {
-                        var objectTuple = this.modeL.Intersect(RaycastObject(ob.getRectangle(), point_speed), ob.quads.get(0));
+                        var objectTuple = this.model.intersect(raycast_object(ob.getRectangle(), point_speed), ob.quads.get(0));
                         if (objectTuple == null) {
                             blocked = true;
                             break;
@@ -144,12 +147,12 @@ public class PlayerController implements KeyListener, MovingObject {
                             var iterator = objectTuple.iterator();
                             while (iterator.hasNext()) {
                                 GameObject o = iterator.next();
-                                ObjectStatus status1 = this.modeL.getObjectStatus(o.type);
+                                ObjectStatus status1 = this.model.getObjectStatus(o.type);
                                 if (status1.isFloat)
                                     continue;
                                 if (status1.isPushable) {
                                     objectsToUpdatePush.add(o);
-                                    var it = this.modeL.Intersect(RaycastObject(o.getRectangle(), point_speed), o.quads.get(0));
+                                    var it = this.model.intersect(raycast_object(o.getRectangle(), point_speed), o.quads.get(0));
                                     if (it == null) { // out of frame
                                         blocked = true;
                                         break;
@@ -178,7 +181,7 @@ public class PlayerController implements KeyListener, MovingObject {
     }
 
     @Override
-    public boolean isMoving() {
+    public boolean is_moving() {
         return point_speed.x != 0 || point_speed.y != 0;
     }
 

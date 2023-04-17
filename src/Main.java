@@ -1,6 +1,4 @@
 import java.awt.*;
-import java.io.Console;
-import java.util.ArrayList;
 
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
@@ -17,8 +15,7 @@ public class Main {
         map1.objects.add(player.playerObject);
         map1.objects.add(new GameObject(150, 150, ObjectType.Wall , Color.black));
         map1.objects.add(new GameObject(150 + GameModel.objectWidth, 150, ObjectType.Wall , Color.black));
-        gm.StartNewMap(map1);
-
+        gm.start_new_level(map1);
 
     }
 }

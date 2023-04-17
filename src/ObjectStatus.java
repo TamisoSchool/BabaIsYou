@@ -2,6 +2,7 @@ public class ObjectStatus {
     public boolean isPushable;
     public boolean isDeath;
     public boolean isFloat;
+    public boolean isMelt;
     public final ObjectType objectType;
     public ObjectStatus(ObjectType objectType, boolean isDeath, boolean isPushable, boolean isFloat){
         this.objectType = objectType;
