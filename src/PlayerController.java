@@ -16,8 +16,8 @@ public class PlayerController implements KeyListener, MovingObject {
 
     public PlayerController(GameModel model) {
         this.model = model;
-        playerObject = new GameObject(100, 100, ObjectType.Player, Color.RED);
-        rayCast = new GameObject(10, 10, ObjectType.Wall, 10, 10, Color.GREEN);
+        playerObject = new GameObject(100, 100, ObjectType.PLAYER, Color.RED);
+        rayCast = new GameObject(10, 10, ObjectType.WALL, 10, 10, Color.GREEN);
         this.model.test_add_object(rayCast);
 
         Timer gameUpdate = new Timer(10, e -> {
@@ -119,23 +119,27 @@ public class PlayerController implements KeyListener, MovingObject {
             ArrayList<GameObject> intersecting = this.model.intersect(playerRayCast, playerObject.quads.get(0));
 
             ArrayList<GameObject> objectsToUpdatePush = new ArrayList<>();
+            ObjectStatus playerStatus = this.model.getObjectStatus(playerObject.type);
+            boolean isFloatPlayer = playerStatus.get_property(PropertyTypeText.FLOAT);
             if(intersecting != null) {
                 for (GameObject ob : intersecting // loop objects that intersect with player
                 ) {
+
                     ObjectStatus status = this.model.getObjectStatus(ob.type);
-                    if (status.isFloat)
+                    if (status.get_property(PropertyTypeText.FLOAT) != isFloatPlayer)
                         continue;
 
-                    if (status.isDeath) {
+                    if (status.get_property(PropertyTypeText.DEFEAT)) {
                         // lose level
                         // restart level
                         return;
                     }
-                    if (!status.isPushable && !blocked) {
+                    boolean objectPush = status.get_property(PropertyTypeText.PUSH);
+                    if (!objectPush && !blocked) {
                         blocked = true;
-                    } else if (status.isPushable && !blocked) {
+                    } else if (objectPush && !blocked) {
                         var objectTuple = this.model.intersect(raycast_object(ob.getRectangle(), point_speed), ob.quads.get(0));
-                        if (objectTuple == null) {
+                        if (objectTuple == null) { // out of frame
                             blocked = true;
                             break;
                         }

@@ -1,6 +1,10 @@
 public enum ObjectType {
-    Wall,
-    Key,
-    Player,
-    Flag
+    WALL,
+    KEY,
+    PLAYER,
+    FLAG,
+    WATER,
+    TEXT,
+
 }
+

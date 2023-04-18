@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GameObject extends JComponent implements MovingObject {
-    public final int uniqueNr = ThreadLocalRandom.current().nextInt(0, 1000000000);
-    int x, y;
-    int width, height;
-    ObjectType type;
-    Color color;
+    protected int x, y;
+    protected int width, height;
+    protected ObjectType type;
+    protected Color color;
     public ArrayList<Quadtree> quads = new ArrayList<>();
 
     public GameObject(int x, int y, ObjectType type, Color color) {

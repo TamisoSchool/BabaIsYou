@@ -13,14 +13,19 @@ public class GameModel {
     Quadtree root;
     private Timer timer;
 
+    private TextModel textModel;
+
     public GameModel(GameView view) {
         this.view = view;
         root = new Quadtree(5, new Rectangle(0, 0, 1920, 1080), null);
 
-        objectStatus.put(ObjectType.Key, new ObjectStatus(ObjectType.Key, false, true, false));
-        objectStatus.put(ObjectType.Wall, new ObjectStatus(ObjectType.Wall, false, true, false));
-        objectStatus.put(ObjectType.Flag, new ObjectStatus(ObjectType.Flag, false, false, false));
-        objectStatus.put(ObjectType.Player, new ObjectStatus(ObjectType.Player, false, false, false));
+        objectStatus.put(ObjectType.KEY, new ObjectStatus(ObjectType.KEY));
+        objectStatus.put(ObjectType.WALL, new ObjectStatus(ObjectType.WALL));
+        objectStatus.put(ObjectType.FLAG, new ObjectStatus(ObjectType.FLAG));
+        objectStatus.put(ObjectType.PLAYER, new ObjectStatus(ObjectType.PLAYER));
+        objectStatus.put(ObjectType.WATER, new ObjectStatus(ObjectType.PLAYER));
+
+        this.textModel = new TextModel();
     }
     public ObjectStatus getObjectStatus(ObjectType type){
         return objectStatus.get(type);

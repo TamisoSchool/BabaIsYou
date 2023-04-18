@@ -11,10 +11,10 @@ public class Main {
         PlayerController player = new PlayerController(gm);
 
         GameMap map1 = new GameMap();
-        map1.objects.addAll(GameMap.MultipleObject(0, 0, ObjectType.Wall, 10, Direction.Down));
+        map1.objects.addAll(GameMap.MultipleObject(0, 0, ObjectType.WALL, 10, Direction.Down));
         map1.objects.add(player.playerObject);
-        map1.objects.add(new GameObject(150, 150, ObjectType.Wall , Color.black));
-        map1.objects.add(new GameObject(150 + GameModel.objectWidth, 150, ObjectType.Wall , Color.black));
+        map1.objects.add(new GameObject(150, 150, ObjectType.WALL, Color.black));
+        map1.objects.add(new GameObject(150 + GameModel.objectWidth, 150, ObjectType.WALL, Color.black));
         gm.start_new_level(map1);
 
     }
