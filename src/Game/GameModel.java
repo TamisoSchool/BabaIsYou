@@ -1,3 +1,12 @@
+package Game;
+
+import Collision.CollisionHandler;
+import Collision.Quadtree;
+import Object.GameObject;
+import Object.ObjectStatus;
+import Object.ObjectType;
+import Object.TextModel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyListener;
@@ -9,6 +18,12 @@ public class GameModel {
     public static final int objectHeight = 18;
     public ArrayList<GameObject> allObjects = new ArrayList<>();
     private HashMap<ObjectType, ObjectStatus> objectStatus = new HashMap<>();
+    private ArrayList<CollisionHandler> collision_handler;
+
+    public ArrayList<CollisionHandler> collision_handler() {
+        return collision_handler;
+    }
+
     GameView view;
     Quadtree root;
     private Timer timer;
@@ -27,9 +42,11 @@ public class GameModel {
 
         this.textModel = new TextModel();
     }
+
     public ObjectStatus getObjectStatus(ObjectType type){
         return objectStatus.get(type);
     }
+
     public void win_level() {
 
     }
@@ -39,8 +56,9 @@ public class GameModel {
     }
 
     public ArrayList<GameObject> intersect(Rectangle rect, Quadtree startFrom){
-         return intersect(rect.x, rect.y, rect.width, rect.height, startFrom);
+        return intersect(rect.x, rect.y, rect.width, rect.height, startFrom);
     }
+
     public ArrayList<GameObject> intersect(int x, int y, int width, int height, Quadtree startFrom) {
 
         Rectangle toCheck = new Rectangle(x, y, width, height);
@@ -55,11 +73,10 @@ public class GameModel {
             return null;
 
 
-
         ArrayList<GameObject> objectsIntersect = new ArrayList<>();
         for (int i = 0; i < gameObjects.size(); i++) {
             if (toCheck.intersects(gameObjects.get(i).getRectangle()))
-                    objectsIntersect.add(gameObjects.get(i));
+                objectsIntersect.add(gameObjects.get(i));
         }
         return objectsIntersect;
     }
@@ -78,7 +95,7 @@ public class GameModel {
 
     }
 /// test function
-    public void test_add_object(GameObject object) {
-        view.add(object);
-    }
+public void test_add_object(GameObject object) {
+    view.add(object);
+}
 }

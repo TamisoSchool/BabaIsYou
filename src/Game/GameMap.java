@@ -1,3 +1,8 @@
+package Game;
+
+import Object.GameObject;
+import Object.ObjectType;
+
 import java.awt.*;
 import java.util.ArrayList;
 

@@ -1,12 +1,11 @@
-import java.util.AbstractMap;
-import java.util.AbstractMap.SimpleEntry;
+package Object;
+
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 public class ObjectStatus {
-    public HashMap<PropertyTypeText, boolean> status = new HashMap();
+    public HashMap<PropertyTypeText, Boolean> status = new HashMap();
     public final ObjectType objectType;
+
     public ObjectStatus(ObjectType objectType){
         this.objectType = objectType;
         PropertyTypeText[] enumConstants = (PropertyTypeText.class).getEnumConstants();
@@ -14,6 +13,7 @@ public class ObjectStatus {
             status.put(enumConstant, false);
         }
     }
+
     public void set_property(PropertyTypeText property, boolean newVal){
         if(property == null)
             return;

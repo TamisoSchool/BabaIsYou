@@ -1,5 +1,12 @@
+package Collision;
+
+import Object.GameObject;
+
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 public class Quadtree {
     private static final int MAX_OBJECTS = 10;
@@ -10,6 +17,7 @@ public class Quadtree {
     private final Quadtree[] nodes;
     private final Quadtree parentNode;
     private ArrayList<GameObject> objects;
+
     public Quadtree(int level, Rectangle bounds, Quadtree parentNode) {
         this.level = level;
         this.objects = new ArrayList<>();
@@ -68,16 +76,14 @@ public class Quadtree {
         if (this.objects.size() > MAX_OBJECTS) {
             split();
             Iterator<GameObject> iterator = this.objects.iterator();
-            while (iterator.hasNext())
-             {
-                    GameObject ob = iterator.next();
-                    ob.quads.remove(this);
+            while (iterator.hasNext()) {
+                GameObject ob = iterator.next();
+                ob.quads.remove(this);
 
-                    add_to_intersecting_children(ob);
+                add_to_intersecting_children(ob);
             }
             this.insert(gObject);
-        }
-        else{
+        } else{
             this.objects.add(gObject);
             gObject.quads.add(this);
         }
@@ -94,6 +100,7 @@ public class Quadtree {
         }
         insert(gObject);
     }
+
     public ArrayList<GameObject> retrieve_objects_in_vicinity(Rectangle searchArea) {
         if (!get_bounds().contains(searchArea)) {
             if (parentNode == null)
@@ -125,6 +132,7 @@ public class Quadtree {
         }
         return rects;
     }
+
     public  ArrayList<GameObject> all_gameObject(){
         ArrayList<GameObject> gameObjects = new ArrayList<>(objects);
         if(nodes[0] != null) {
@@ -135,6 +143,7 @@ public class Quadtree {
         }
         return gameObjects;
     }
+
     public ArrayList<GameObject> all_gameObject(Rectangle rect){
         Set<GameObject> gameObjects = new HashSet<>(objects);
         if(nodes[0] != null) {
@@ -152,6 +161,7 @@ public class Quadtree {
         }
         return new ArrayList<>(gameObjects);
     }
+
     public void remove(GameObject ob){
         this.objects.remove(ob);
     }

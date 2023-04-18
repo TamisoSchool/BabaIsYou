@@ -1,3 +1,8 @@
+package Game;
+
+
+import Object.*;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -7,7 +12,7 @@ import java.util.ArrayList;
 public class PlayerController implements KeyListener, MovingObject {
     private final int rayCastLine = 1;
     private final GameObject rayCast;
-    GameObject playerObject;
+    public GameObject playerObject;
     GameModel model;
     Point point_speed = new Point(0, 0);
     boolean blocked = false;
@@ -108,24 +113,20 @@ public class PlayerController implements KeyListener, MovingObject {
             Rectangle playerRayCast = raycast_object(playerObject.getRectangle(), point_speed);
             blocked = false;
 
-            this.rayCast.height = playerRayCast.height;
-            this.rayCast.width = playerRayCast.width;
-            this.rayCast.x = playerRayCast.x;
-            this.rayCast.y = playerRayCast.y;
-
+            this.rayCast.set_val(playerRayCast.x, playerRayCast.y, playerRayCast.width, playerRayCast.height);
             this.rayCast.repaint();
 
 
             ArrayList<GameObject> intersecting = this.model.intersect(playerRayCast, playerObject.quads.get(0));
 
             ArrayList<GameObject> objectsToUpdatePush = new ArrayList<>();
-            ObjectStatus playerStatus = this.model.getObjectStatus(playerObject.type);
+            ObjectStatus playerStatus = this.model.getObjectStatus(playerObject.Type());
             boolean isFloatPlayer = playerStatus.get_property(PropertyTypeText.FLOAT);
             if(intersecting != null) {
                 for (GameObject ob : intersecting // loop objects that intersect with player
                 ) {
 
-                    ObjectStatus status = this.model.getObjectStatus(ob.type);
+                    ObjectStatus status = this.model.getObjectStatus(ob.Type());
                     if (status.get_property(PropertyTypeText.FLOAT) != isFloatPlayer)
                         continue;
 

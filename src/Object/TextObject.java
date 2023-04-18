@@ -1,9 +1,10 @@
-import java.awt.*;
-import java.io.Console;
-import java.util.Locale;
+package Object;
 
-public class TextObject extends GameObject{
+import java.awt.*;
+
+public class TextObject extends GameObject {
     String text;
+
     private TextObject(int x, int y, Color color, String text) {
         super(x, y, ObjectType.TEXT, color);
         this.text = text;
@@ -20,16 +21,15 @@ public class TextObject extends GameObject{
         g.setColor(Color.BLACK);
         g.drawString(text, width/2 - text.length()*3, height/2 + 5);
     }
+
     public TextObject create_text_object(int x, int y, Color color, String text){
         try{
             ObjectType objectType = ObjectType.valueOf(text.toUpperCase());
             return new TextObject(x, y, color, text);
-        }
-        catch (Exception e){
+        } catch (Exception e){
             try{
                 return new TextObject(x, y, color, text);
-            }
-            catch (Exception ee){
+            } catch (Exception ee){
                 return null;
             }
         }

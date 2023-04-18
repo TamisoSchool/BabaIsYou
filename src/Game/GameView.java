@@ -1,11 +1,13 @@
+package Game;
+
+import Object.GameObject;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
 public class GameView extends JFrame {
 
-    PlayerController player;
-    boolean init = false;
     public ArrayList<Rectangle> quads = new ArrayList<>();
 
     public GameView() {

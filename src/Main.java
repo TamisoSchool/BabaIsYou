@@ -1,3 +1,7 @@
+import Game.*;
+import Object.GameObject;
+import Object.ObjectType;
+
 import java.awt.*;
 
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,

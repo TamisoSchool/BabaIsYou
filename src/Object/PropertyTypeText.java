@@ -1,3 +1,5 @@
+package Object;
+
 public enum PropertyTypeText {
     YOU,
     WIN,
@@ -9,5 +11,6 @@ public enum PropertyTypeText {
     FLOAT,
     OPEN,
     SHUT,
+    SINK,
 }
 
