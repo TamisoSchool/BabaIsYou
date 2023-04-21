@@ -1,6 +1,6 @@
 import Game.*;
 import Object.GameObject;
-import Object.ObjectType;
+import Object.*;
 
 import java.awt.*;
 
@@ -19,6 +19,7 @@ public class Main {
         map1.objects.add(player.playerObject);
         map1.objects.add(new GameObject(150, 150, ObjectType.WALL, Color.black));
         map1.objects.add(new GameObject(150 + GameModel.objectWidth, 150, ObjectType.WALL, Color.black));
+        map1.objects.add(new TextObject(400, 100, Color.WHITE, ObjectType.WALL));
         gm.start_new_level(map1);
 
     }

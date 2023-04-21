@@ -30,6 +30,7 @@ public class GameView extends JFrame {
         for (int i = 0; i < gameObjects.size(); i++) {
             gameObjects.get(i).update(p);
             add(gameObjects.get(i));
+            gameObjects.get(i).update(new Point(0,0));
         }
         repaint();
     }

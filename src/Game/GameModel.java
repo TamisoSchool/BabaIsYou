@@ -1,7 +1,6 @@
 package Game;
 
-import Collision.CollisionHandler;
-import Collision.Quadtree;
+import Collision.*;
 import Object.GameObject;
 import Object.ObjectStatus;
 import Object.ObjectType;
@@ -12,15 +11,18 @@ import java.awt.*;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+import Object.*;
+import org.w3c.dom.css.Rect;
 
 public class GameModel {
     public static final int objectWidth = 32;
     public static final int objectHeight = 18;
     public ArrayList<GameObject> allObjects = new ArrayList<>();
-    private HashMap<ObjectType, ObjectStatus> objectStatus = new HashMap<>();
-    private ArrayList<CollisionHandler> collision_handler;
+    private final HashMap<ObjectType, ObjectStatus> objectStatus = new HashMap<>();
+    private final CollisionHandler collision_handler;
+    private final ArrayList<TextObject> txt_object_type = new ArrayList<TextObject>();
 
-    public ArrayList<CollisionHandler> collision_handler() {
+    public CollisionHandler collision_handler() {
         return collision_handler;
     }
 
@@ -28,7 +30,7 @@ public class GameModel {
     Quadtree root;
     private Timer timer;
 
-    private TextModel textModel;
+    private final TextModel textModel;
 
     public GameModel(GameView view) {
         this.view = view;
@@ -39,8 +41,24 @@ public class GameModel {
         objectStatus.put(ObjectType.FLAG, new ObjectStatus(ObjectType.FLAG));
         objectStatus.put(ObjectType.PLAYER, new ObjectStatus(ObjectType.PLAYER));
         objectStatus.put(ObjectType.WATER, new ObjectStatus(ObjectType.PLAYER));
+        objectStatus.put(ObjectType.TEXT, new ObjectStatus(ObjectType.PLAYER));
+
+        objectStatus.get(ObjectType.WALL).set_property(PropertyTypeText.PUSH, true);
+        objectStatus.get(ObjectType.TEXT).set_property(PropertyTypeText.PUSH, true);
 
         this.textModel = new TextModel();
+
+        CollisionHandler collision_handler = new FloatHandler();
+        CollisionHandler outcome_handler = new OutcomeHandler();
+        CollisionHandler destroy_handler = new DestroyHandler();
+        CollisionHandler blocker_handler = new BlockerHandler();
+
+        collision_handler.set_next_handler(outcome_handler);
+        outcome_handler.set_next_handler(destroy_handler);
+        destroy_handler.set_next_handler(blocker_handler);
+
+        this.collision_handler = collision_handler;
+
     }
 
     public ObjectStatus getObjectStatus(ObjectType type){
@@ -88,11 +106,55 @@ public class GameModel {
     public void start_new_level(GameMap map) {
         root.clear();
         for (int i = 0; i < map.objects.size(); i++) {
+            GameObject ob = map.objects.get(i);
             root.insert(map.objects.get(i));
+            if(ob instanceof TextObject){
+                if(((TextObject)ob).object_type_txt() == 1){
+                    this.txt_object_type.add((TextObject) ob);
+                }
+            }
         }
         view.quads = root.all_rect();
         view.add_objects(map.objects);
 
+    }
+
+    public void update_text_attributes(){
+        for (TextObject txt: this.txt_object_type){
+            TextObject two = txt.check_attribute(this);
+            if(two.object_type_txt() == 1){
+              TextObject third =  two.check_attribute(this);
+              if(third.object_type_txt() == 2){
+                ObjectType first_objectType = txt.Type();
+              }
+              else if(third.object_type_txt() == 0){
+
+              }
+            }
+        }
+    }
+    public boolean check_position_Y_between_rect(Rectangle rect1, Rectangle rect2,int thresholdY){
+        return Math.abs(rect1.getMinY() - rect2.getMinY()) < thresholdY ||
+                Math.abs(rect1.getMaxY() - rect2.getMaxY()) < thresholdY;
+    }
+
+    public Rectangle raycast_object(Rectangle origin, Point direction) {
+        int width = Math.abs(direction.x) + Math.abs(direction.y) * GameModel.objectWidth;
+        int height = GameModel.objectHeight * Math.abs(direction.x) + Math.abs(direction.y);
+
+        int xPos = origin.x;
+        if (direction.x < 0)
+            xPos = origin.x - width;
+        if (direction.x > 0)
+            xPos = origin.x + GameModel.objectWidth;
+
+        int yPos = origin.y;
+        if (direction.y < 0)
+            yPos = origin.y - height;
+        if (direction.y > 0)
+            yPos = origin.y + GameModel.objectHeight;
+
+        return new Rectangle(xPos, yPos, width, height);
     }
 /// test function
 public void test_add_object(GameObject object) {

@@ -6,11 +6,7 @@ import Object.*;
 import java.awt.*;
 
 public class DestroyHandler implements CollisionHandler {
-    private final CollisionHandler next_handler;
-
-    public DestroyHandler(CollisionHandler nextHandler) {
-        this.next_handler = nextHandler;
-    }
+    private CollisionHandler next_handler;
 
     @Override
     public int handle_collision(GameObject object1, GameObject object2, Point speed, GameModel model) {
@@ -24,8 +20,17 @@ public class DestroyHandler implements CollisionHandler {
             return 2;
         }
 
-        else if(objectStatus1.get_property(P))
+        else if(objectStatus1.get_property(PropertyTypeText.SINK) || objectStatus2.get_property(PropertyTypeText.SINK)){
+            object1.destroy();
+            object2.destroy();
+            return 2;
+        }
+        return next_handler.handle_collision(object1, object2, speed, model);
+    }
 
+    @Override
+    public void set_next_handler(CollisionHandler next) {
+        this.next_handler = next;
     }
 }
 

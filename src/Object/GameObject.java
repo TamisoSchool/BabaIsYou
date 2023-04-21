@@ -36,9 +36,6 @@ public class GameObject extends JComponent implements MovingObject {
         this.color = color;
     }
 
-    public void move() {
-    }
-
     public void set_val(int x, int y, int width, int height) {
         this.x = x;
         this.y = y;

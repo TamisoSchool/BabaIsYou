@@ -6,12 +6,7 @@ import Object.ObjectType;
 import java.awt.*;
 import java.util.ArrayList;
 
-enum Direction {
-    Right,
-    Left,
-    Up,
-    Down,
-}
+
 
 public class GameMap {
     public ArrayList<GameObject> objects = new ArrayList<>();

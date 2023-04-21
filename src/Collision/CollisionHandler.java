@@ -7,4 +7,8 @@ import java.awt.*;
 
 public interface CollisionHandler {
     int handle_collision(GameObject object1, GameObject object2, Point speed, GameModel model);
+
+    void set_next_handler(CollisionHandler next);
+
+
 }

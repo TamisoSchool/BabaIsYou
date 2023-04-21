@@ -5,11 +5,7 @@ import Object.*;
 import java.awt.*;
 
 public class FloatHandler implements CollisionHandler {
-    private final CollisionHandler next_handler;
-
-    public FloatHandler(CollisionHandler nextHandler) {
-        this.next_handler = nextHandler;
-    }
+    private CollisionHandler next_handler;
 
     @Override
     public int handle_collision(GameObject object1, GameObject object2, Point speed, GameModel model) {
@@ -20,5 +16,10 @@ public class FloatHandler implements CollisionHandler {
         return 0;
 
 
+    }
+
+    @Override
+    public void set_next_handler(CollisionHandler next) {
+        this.next_handler = next;
     }
 }
