@@ -11,20 +11,16 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 public class PlayerController implements KeyListener, MovingObject {
-    private final int rayCastLine = 1;
-    private final GameObject rayCast;
-    public GameObject playerObject;
+    public static GameObject player_object;
+    public static GameObject get_player_object(){return player_object;}
     GameModel model;
     Point point_speed = new Point(0, 0);
     boolean blocked = false;
-    Point point_speed_last_update = new Point(0, 0);
     ArrayList<Integer> dir = new ArrayList<Integer>();
 
     public PlayerController(GameModel model) {
         this.model = model;
-        playerObject = new GameObject(100, 100, ObjectType.PLAYER, Color.RED);
-        rayCast = new GameObject(10, 10, ObjectType.WALL, 10, 10, Color.GREEN);
-        this.model.test_add_object(rayCast);
+        player_object = new GameObject(100, 100, ObjectType.PLAYER);
 
         Timer gameUpdate = new Timer(10, e -> {
             this.update(new Point(0,0));
@@ -94,25 +90,26 @@ public class PlayerController implements KeyListener, MovingObject {
     public void update(Point point) {
         if (is_moving()) {
 
-            Rectangle playerRayCast = this.model.raycast_object(playerObject.getRectangle(), point_speed);
+            Rectangle playerRayCast = this.model.raycast_object(player_object.getRectangle(), point_speed);
             blocked = false;
 
-            this.rayCast.set_val(playerRayCast.x, playerRayCast.y, playerRayCast.width, playerRayCast.height);
-            this.rayCast.repaint();
-
-
-            ArrayList<GameObject> intersecting = this.model.intersect(playerRayCast, playerObject.quads.get(0));
-            if(intersecting.size() > 0) {
-                for (GameObject ob : intersecting) {
-                    this.model.collision_handler().handle_collision(this.playerObject, ob, point_speed, this.model);
+            ArrayList<GameObject> intersecting = this.model.intersect(playerRayCast, player_object.quads.get(0));
+            if(intersecting != null)
+                if(intersecting.size() > 0) {
+                    for (GameObject ob : intersecting) {
+                        PropertyTypeText index = this.model.collision_handler().handle_collision(this.player_object, ob, point_speed, this.model);
+                        if(index == PropertyTypeText.STOP || index == PropertyTypeText.SHUT){
+                            blocked = true;
+                        }
+                    }
+                    for (GameObject p : BlockerHandler.object_update_push()) {
+                        if(!blocked)
+                            p.update(point_speed);
+                    }
                 }
-                for (GameObject p : BlockerHandler.object_update_push()) {
-                    p.update(point_speed);
+                else{
+                    player_object.update(point_speed);
                 }
-            }
-            else{
-                playerObject.update(point_speed);
-            }
             }
     }
 
@@ -126,6 +123,6 @@ public class PlayerController implements KeyListener, MovingObject {
 
     @Override
     public JComponent getComp() {
-        return playerObject;
+        return player_object;
     }
 }

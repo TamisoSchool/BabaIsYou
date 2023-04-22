@@ -12,5 +12,6 @@ public enum PropertyTypeText {
     OPEN,
     SHUT,
     SINK,
+    NULL,
 }
 

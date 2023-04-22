@@ -24,42 +24,41 @@ public class BlockerHandler implements CollisionHandler {
 
 
     @Override
-    public int handle_collision(GameObject object1, GameObject object2, Point speed, GameModel model) {
+    public PropertyTypeText handle_collision(GameObject object1, GameObject object2, Point speed, GameModel model) {
         ObjectStatus status2 = model.getObjectStatus(object2.Type());
         objects_update.add(object1);
-        if (status2.get_property(PropertyTypeText.PUSH)) {
+        if(status2.get_property(PropertyTypeText.SHUT)){
+            objects_update.clear();
+            return PropertyTypeText.SHUT;
+        }
+        else if (status2.get_property(PropertyTypeText.PUSH)) {
 
             ArrayList<GameObject> ob = model.intersect(model.raycast_object(object2.getRectangle(), speed), object2.quads.get(0));
             objects_update.add(object2);
-
+            if(ob == null) // out of frame
+            {
+                objects_update.clear();
+                return PropertyTypeText.STOP;
+            }
             if (ob.size() == 0) {
 
-                return 5;
+                return PropertyTypeText.PUSH;
             }
 
             for (GameObject el : ob) {
-                int index = model.collision_handler().handle_collision(object2, el, speed, model);
-                if(index == 6){
+                PropertyTypeText index = model.collision_handler().handle_collision(object2, el, speed, model);
+                if(index == PropertyTypeText.STOP || index == PropertyTypeText.SHUT){
                     objects_update.clear();
                     return index;
                 }
-                else if(index == 5){
-                    return 5;
-                }
-                else{
-                    return 5;
-                }
-
             }
-            return 5;
+            return PropertyTypeText.PUSH;
         }
-        else if(status2.get_property(PropertyTypeText.STOP)){
+        else if(status2.get_property(PropertyTypeText.STOP)){ //
             objects_update.clear();
-            return 6;
+            return PropertyTypeText.STOP;
         }
-        else{ //
-            return 5;
-        }
+        return PropertyTypeText.NULL;
     }
 
     @Override

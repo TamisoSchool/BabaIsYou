@@ -7,6 +7,7 @@ public enum ObjectType {
     FLAG,
     WATER,
     TEXT,
-
+    ROCK,
+    DOOR,
 }
 
