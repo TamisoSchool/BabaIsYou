@@ -62,6 +62,7 @@ public class GameModel {
         destroy_handler.set_next_handler(blocker_handler);
 
         this.collision_handler = collision_handler;
+        default_status();
 
     }
     private void default_status(){

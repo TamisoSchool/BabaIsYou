@@ -20,7 +20,7 @@ public class PlayerController implements KeyListener, MovingObject {
 
     public PlayerController(GameModel model) {
         this.model = model;
-        player_object = new GameObject(100, 100, ObjectType.PLAYER);
+        player_object = new GameObject(500, 100, ObjectType.PLAYER);
 
         Timer gameUpdate = new Timer(10, e -> {
             this.update(new Point(0,0));
@@ -97,7 +97,7 @@ public class PlayerController implements KeyListener, MovingObject {
             if(intersecting != null)
                 if(intersecting.size() > 0) {
                     for (GameObject ob : intersecting) {
-                        PropertyTypeText index = this.model.collision_handler().handle_collision(this.player_object, ob, point_speed, this.model);
+                        PropertyTypeText index = this.model.collision_handler().handle_collision(player_object, ob, point_speed, this.model);
                         if(index == PropertyTypeText.STOP || index == PropertyTypeText.SHUT){
                             blocked = true;
                         }

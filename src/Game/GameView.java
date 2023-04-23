@@ -18,11 +18,6 @@ public class GameView extends JFrame {
 
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        System.out.println("Width:" + getWidth()); // 30 width
-        System.out.println("Height:" + getHeight());
-
-
     }
 
     public void add_objects(ArrayList<GameObject> gameObjects) {
@@ -38,6 +33,6 @@ public class GameView extends JFrame {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        LineRenderer.draw_border_rectangle(g, this.quads);
+       // LineRenderer.draw_border_rectangle(g, this.quads);
     }
 }

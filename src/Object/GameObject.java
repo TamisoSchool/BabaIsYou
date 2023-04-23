@@ -77,6 +77,7 @@ public class GameObject extends JComponent implements MovingObject {
     }
 
     public void set_object_type(ObjectType newType){
+        this.type = newType;
         switch (newType){
             case KEY -> objectDrawing =  g -> {
                 super.paintComponent(g);
@@ -92,7 +93,7 @@ public class GameObject extends JComponent implements MovingObject {
 
             case WALL -> objectDrawing = g -> {
                 super.paintComponent(g);
-                g.setColor(color);
+                g.setColor(Color.BLACK);
                 g.fillRect(0, 0, width, height);
             };
 
@@ -120,34 +121,8 @@ public class GameObject extends JComponent implements MovingObject {
 
             case PLAYER -> objectDrawing = g -> {
                 super.paintComponent(g);
-
-                // Determine the size of the stick figure
-                int size = (int)Math.min(width * 0.8, height * 0.8);
-
-                // Determine the position of the stick figure
-                int x = (width - size) / 2;
-                int y = (height - size) / 2;
-
-                // Calculate the bounds of the collision rectangle
-                int collisionX = x;
-                int collisionY = y;
-                int collisionWidth = size;
-                int collisionHeight = size;
-
-                // Draw head
-                g.drawOval(x + size/4, y, size/2, size/4);
-
-                // Draw body
-                g.drawLine(x + size/2, y + size/4, x + size/2, y + 3*size/4);
-
-                // Draw legs
-                g.drawLine(x + size/2, y + 3*size/4, collisionX, collisionY + collisionHeight);
-                g.drawLine(x + size/2, y + 3*size/4, collisionX + collisionWidth, collisionY + collisionHeight);
-
-                // Draw arms
-                g.drawLine(x + size/2, y + size/2, collisionX, collisionY + size/2);
-                g.drawLine(x + size/2, y + size/2, collisionX + collisionWidth, collisionY + size/2);
-
+                g.setColor(Color.BLUE);
+                g.fillRect(0, 0, width, height);
             };
             case ROCK -> objectDrawing = g->{
                 g.setColor(new Color(101, 67, 33));
@@ -164,6 +139,8 @@ public class GameObject extends JComponent implements MovingObject {
 
 
             };
+
+
         }
     }
     @Override

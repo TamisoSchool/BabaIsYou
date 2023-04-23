@@ -2,6 +2,8 @@ import Game.*;
 import Object.GameObject;
 import Object.*;
 
+import java.util.ArrayList;
+
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
@@ -14,19 +16,24 @@ public class Main {
 
         GameMap map1 = new GameMap();
 
-        map1.objects.addAll(GameMap.multiplie_object_grid(0, 0, ObjectType.WALL, 3, Direction.Right));
-        map1.objects.addAll(GameMap.multiplie_object_grid(3, 1, ObjectType.WALL, 3, Direction.Down));
 
-        map1.objects.addAll(GameMap.multiplie_object_grid(0, 5, ObjectType.WALL, 3, Direction.Right));
 
-        map1.objects.addAll(GameMap.sentence_generator_grid(0, 1, ObjectType.WALL, OperatorText.IS, PropertyTypeText.STOP, gm, Direction.Right));
-        map1.objects.addAll(GameMap.sentence_generator_grid(0, 2, ObjectType.KEY, OperatorText.IS, PropertyTypeText.OPEN, gm, Direction.Right));
-        map1.objects.addAll(GameMap.sentence_generator_grid(0, 3, ObjectType.DOOR, OperatorText.IS, PropertyTypeText.SHUT, gm, Direction.Right));
-        map1.objects.addAll(GameMap.sentence_generator_grid(0, 4, ObjectType.KEY, OperatorText.IS, PropertyTypeText.PUSH, gm, Direction.Right));
-        map1.objects.add(new GameObject(400, 400, ObjectType.DOOR));
-        map1.objects.add(new GameObject(500, 400, ObjectType.KEY));
+       // map1.objects.addAll(GameMap.rectangle_border(0, 0, ObjectType.WALL, 5, 4));
+        ArrayList<GameObject> playerRoom = GameMap.rectangle_border(10, 10, ObjectType.WALL, 10, 10);
+        PlayerController.get_player_object().set_val(13*GameModel.objectWidth, 13*GameModel.objectHeight);
+        map1.objects.add(new GameObject(14*GameModel.objectWidth, 14*GameModel.objectHeight, ObjectType.KEY));
 
-        map1.objects.add(player.player_object);
+        playerRoom.get(14).set_object_type(ObjectType.DOOR);
+
+        map1.objects.addAll(GameMap.sentence_generator_grid(1, 1, ObjectType.WALL, OperatorText.IS, PropertyTypeText.STOP, gm, Direction.Right));
+        map1.objects.addAll(GameMap.sentence_generator_grid(1, 2, ObjectType.KEY, OperatorText.IS, PropertyTypeText.OPEN, gm, Direction.Right));
+        map1.objects.addAll(GameMap.sentence_generator_grid(1, 3, ObjectType.DOOR, OperatorText.IS, PropertyTypeText.SHUT, gm, Direction.Right));
+        map1.objects.addAll(GameMap.sentence_generator_grid(1, 4, ObjectType.KEY, OperatorText.IS, PropertyTypeText.PUSH, gm, Direction.Right));
+
+
+        map1.objects.addAll(playerRoom);
+
+        map1.objects.add(PlayerController.player_object);
         gm.start_new_level(map1);
 
     }
