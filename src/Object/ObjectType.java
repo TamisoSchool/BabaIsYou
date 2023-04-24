@@ -3,7 +3,7 @@ package Object;
 public enum ObjectType {
     WALL,
     KEY,
-    PLAYER,
+    BABA,
     FLAG,
     WATER,
     TEXT,

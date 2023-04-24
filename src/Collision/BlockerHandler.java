@@ -44,15 +44,18 @@ public class BlockerHandler implements CollisionHandler {
 
                 return PropertyTypeText.PUSH;
             }
-
+            PropertyTypeText ret = PropertyTypeText.PUSH;
             for (GameObject el : ob) {
                 PropertyTypeText index = model.collision_handler().handle_collision(object2, el, speed, model);
                 if(index == PropertyTypeText.STOP || index == PropertyTypeText.SHUT){
-                    objects_update.clear();
-                    return index;
+
+                    ret = PropertyTypeText.STOP;
                 }
             }
-            return PropertyTypeText.PUSH;
+            if(ret == PropertyTypeText.STOP)
+                objects_update.clear();
+
+            return ret;
         }
         else if(status2.get_property(PropertyTypeText.STOP)){ //
             objects_update.clear();

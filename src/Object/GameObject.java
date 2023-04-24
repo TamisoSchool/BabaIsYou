@@ -5,7 +5,6 @@ import Game.GameModel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 
 public class GameObject extends JComponent implements MovingObject {
@@ -119,7 +118,7 @@ public class GameObject extends JComponent implements MovingObject {
                 g2.fillRect(0, 0, width, height);
             };
 
-            case PLAYER -> objectDrawing = g -> {
+            case BABA -> objectDrawing = g -> {
                 super.paintComponent(g);
                 g.setColor(Color.BLUE);
                 g.fillRect(0, 0, width, height);

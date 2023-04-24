@@ -46,6 +46,7 @@ public class TextObject extends GameObject {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.setColor(Color.BLACK);
+        g.setFont(new Font("Arial", Font.BOLD, 10));
         FontMetrics fm = g.getFontMetrics();
         g.setFont(g.getFont().deriveFont(Font.BOLD));
         int textWidth = fm.stringWidth(text);
@@ -53,6 +54,7 @@ public class TextObject extends GameObject {
         int x = (width - textWidth) / 2;
         int y = height / 2 + 5;
 
+        g.setColor(Color.BLACK);
         g.drawString(text, x, y);
     }
 

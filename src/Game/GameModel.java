@@ -6,7 +6,6 @@ import Object.ObjectStatus;
 import Object.ObjectType;
 import Object.TextModel;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
@@ -19,6 +18,7 @@ public class GameModel {
     private final HashMap<ObjectType, ObjectStatus> objectStatus = new HashMap<>();
     private final CollisionHandler collision_handler;
     private final ArrayList<TextObject> txt_object_type = new ArrayList<TextObject>();
+    private ObjectType[] playerType;
     private HashMap<ObjectType, ArrayList<GameObject>> allObjects = new HashMap<ObjectType, ArrayList<GameObject>>();
 
     public CollisionHandler collision_handler() {
@@ -36,16 +36,16 @@ public class GameModel {
         objectStatus.put(ObjectType.KEY, new ObjectStatus(ObjectType.KEY));
         objectStatus.put(ObjectType.WALL, new ObjectStatus(ObjectType.WALL));
         objectStatus.put(ObjectType.FLAG, new ObjectStatus(ObjectType.FLAG));
-        objectStatus.put(ObjectType.PLAYER, new ObjectStatus(ObjectType.PLAYER));
-        objectStatus.put(ObjectType.WATER, new ObjectStatus(ObjectType.PLAYER));
-        objectStatus.put(ObjectType.TEXT, new ObjectStatus(ObjectType.PLAYER));
-        objectStatus.put(ObjectType.ROCK, new ObjectStatus(ObjectType.PLAYER));
-        objectStatus.put(ObjectType.DOOR, new ObjectStatus(ObjectType.PLAYER));
+        objectStatus.put(ObjectType.BABA, new ObjectStatus(ObjectType.BABA));
+        objectStatus.put(ObjectType.WATER, new ObjectStatus(ObjectType.BABA));
+        objectStatus.put(ObjectType.TEXT, new ObjectStatus(ObjectType.BABA));
+        objectStatus.put(ObjectType.ROCK, new ObjectStatus(ObjectType.BABA));
+        objectStatus.put(ObjectType.DOOR, new ObjectStatus(ObjectType.BABA));
 
         allObjects.put(ObjectType.KEY, new ArrayList<>());
         allObjects.put(ObjectType.WALL, new ArrayList<>());
         allObjects.put(ObjectType.FLAG, new ArrayList<>());
-        allObjects.put(ObjectType.PLAYER, new ArrayList<>());
+        allObjects.put(ObjectType.BABA, new ArrayList<>());
         allObjects.put(ObjectType.WATER, new ArrayList<>());
         allObjects.put(ObjectType.ROCK, new ArrayList<>());
         allObjects.put(ObjectType.DOOR, new ArrayList<>());
@@ -128,6 +128,7 @@ public class GameModel {
         view.quads = root.all_rect();
         view.add_objects(map.objects);
         update_text_attributes();
+        int x = 5;
 
     }
 
@@ -156,14 +157,22 @@ public class GameModel {
 
               ObjectType first_txt = one.get_txt_enum(ObjectType.class);
               OperatorText second_txt = two.get_txt_enum(OperatorText.class);
-              if(second_txt == OperatorText.IS) {
-
-                  if (third!= null && third.object_type_txt() == 2) {
+              if(second_txt == OperatorText.IS && third != null) {
+                  if (third.object_type_txt() == 2) {
 
                       PropertyTypeText third_txt = third.get_txt_enum(PropertyTypeText.class);
-                      objectStatus.get(first_txt).set_property(third_txt, true);
+                      if(third_txt == PropertyTypeText.YOU){
+                          if(this.playerType[0] == null)
+                              this.playerType[0] = first_txt;
+                          else
+                              this.playerType[1] = first_txt;
+                      }
+                      else {
+                          objectStatus.get(first_txt).set_property(third_txt, true);
+                      }
 
-                  } else if (third != null && third.object_type_txt() == 0) {
+
+                  } else if (third.object_type_txt() == 0) {
                       ObjectType third_txt = third.get_txt_enum(ObjectType.class);
                       ArrayList<GameObject> t = new ArrayList<GameObject>(allObjects.get(first_txt));
                       allObjects.get(first_txt).clear();
@@ -177,6 +186,52 @@ public class GameModel {
                           }
                       }
                   }
+                  TextObject fourth = null;
+                  if(checkX)
+                      fourth = third.check_attribute_X(this);
+                  else
+                      fourth = third.check_attribute_Y(this);
+                  if(fourth != null){
+                      var fourth_txt = fourth.get_txt_enum(OperatorText.class);
+                      if(fourth_txt == OperatorText.AND){
+
+                          TextObject fifth = null;
+                          if(checkX)
+                              fifth = third.check_attribute_X(this);
+                          else
+                              fifth = third.check_attribute_Y(this);
+
+                          if(fifth != null){
+                              var last_obj =fifth.get_txt_enum(ObjectType.class);
+                              var last_prop =fifth.get_txt_enum(PropertyTypeText.class);
+                              if(last_prop != null){
+                                  if(last_prop == PropertyTypeText.YOU){
+                                      if(playerType[0] == null){
+                                          playerType[0] = first_txt;
+                                      }
+                                      else{
+                                          playerType[1] = first_txt;
+                                      }
+                                  }
+                                  else {
+                                      this.objectStatus.get(first_txt).set_property(last_prop, true);
+                                  }
+
+                              }
+                              else {
+                                  if(third.get_txt_enum(PropertyTypeText.class) == PropertyTypeText.YOU){
+                                      if(playerType[0] == null){
+                                          playerType[0] = last_obj;
+                                      }
+                                      else{
+                                          playerType[1] = last_obj;
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  }
+
               }
             }
         }
@@ -185,6 +240,10 @@ public class GameModel {
     public boolean check_position_Y_between_rect(Rectangle rect1, Rectangle rect2,int thresholdY){
         return Math.abs(rect1.getMinY() - rect2.getMinY()) < thresholdY ||
                 Math.abs(rect1.getMaxY() - rect2.getMaxY()) < thresholdY;
+    }
+
+    public ArrayList<GameObject> get_player(ObjectType type){
+        return allObjects.get(this.playerType);
     }
 
     public Rectangle raycast_object(Rectangle origin, Point direction) {
@@ -205,10 +264,8 @@ public class GameModel {
 
         return new Rectangle(xPos, yPos, width, height);
     }
-/// test function
-public void test_add_object(GameObject object) {
-    view.add(object);
-}
+
+
 
     public boolean check_position_X_between_rect(Rectangle rectangle, Rectangle rectangle1, int thresholdX) {
         return Math.abs(rectangle.getMinX() - rectangle1.getMinX()) < thresholdX ||
