@@ -86,7 +86,7 @@ public class PlayerController implements KeyListener, MovingObject {
     @Override
     public void update(Point point) {
         if (is_moving()) {
-            ArrayList<GameObject> player_objects = this.model.get_player(this.playerType);
+            ArrayList<GameObject> player_objects = this.model.get_player();
             for(GameObject player_object: player_objects) {
                 Rectangle playerRayCast = this.model.raycast_object(player_object.getRectangle(), point_speed);
                 blocked = false;

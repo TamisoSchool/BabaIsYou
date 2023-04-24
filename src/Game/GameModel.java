@@ -18,7 +18,8 @@ public class GameModel {
     private final HashMap<ObjectType, ObjectStatus> objectStatus = new HashMap<>();
     private final CollisionHandler collision_handler;
     private final ArrayList<TextObject> txt_object_type = new ArrayList<TextObject>();
-    private ObjectType[] playerType;
+    private ObjectType[] player_type = new ObjectType[2];
+    public ObjectType[] player_types(){return player_type;}
     private HashMap<ObjectType, ArrayList<GameObject>> allObjects = new HashMap<ObjectType, ArrayList<GameObject>>();
 
     public CollisionHandler collision_handler() {
@@ -49,6 +50,7 @@ public class GameModel {
         allObjects.put(ObjectType.WATER, new ArrayList<>());
         allObjects.put(ObjectType.ROCK, new ArrayList<>());
         allObjects.put(ObjectType.DOOR, new ArrayList<>());
+        allObjects.put(ObjectType.TEXT, new ArrayList<>());
 
         this.textModel = new TextModel();
 
@@ -118,6 +120,7 @@ public class GameModel {
         root.clear();
         for (int i = 0; i < map.objects.size(); i++) {
             GameObject ob = map.objects.get(i);
+            allObjects.get(map.objects.get(i).Type()).add(ob);
             root.insert(map.objects.get(i));
             if(ob instanceof TextObject){
                 if(((TextObject)ob).object_type_txt() == 0){
@@ -134,11 +137,14 @@ public class GameModel {
 
     public void update_text_attributes(){
         default_status();
+        player_type[0] = null;
+        player_type[1] = null;
         check_text_attribute(true);
         check_text_attribute(false);
     }
 
     private void check_text_attribute(boolean checkX) {
+
         for (TextObject one: this.txt_object_type){
 
             TextObject two;
@@ -162,10 +168,10 @@ public class GameModel {
 
                       PropertyTypeText third_txt = third.get_txt_enum(PropertyTypeText.class);
                       if(third_txt == PropertyTypeText.YOU){
-                          if(this.playerType[0] == null)
-                              this.playerType[0] = first_txt;
+                          if(this.player_type[0] == null)
+                              this.player_type[0] = first_txt;
                           else
-                              this.playerType[1] = first_txt;
+                              this.player_type[1] = first_txt;
                       }
                       else {
                           objectStatus.get(first_txt).set_property(third_txt, true);
@@ -206,11 +212,11 @@ public class GameModel {
                               var last_prop =fifth.get_txt_enum(PropertyTypeText.class);
                               if(last_prop != null){
                                   if(last_prop == PropertyTypeText.YOU){
-                                      if(playerType[0] == null){
-                                          playerType[0] = first_txt;
+                                      if(player_type[0] == null){
+                                          player_type[0] = first_txt;
                                       }
                                       else{
-                                          playerType[1] = first_txt;
+                                          player_type[1] = first_txt;
                                       }
                                   }
                                   else {
@@ -220,11 +226,11 @@ public class GameModel {
                               }
                               else {
                                   if(third.get_txt_enum(PropertyTypeText.class) == PropertyTypeText.YOU){
-                                      if(playerType[0] == null){
-                                          playerType[0] = last_obj;
+                                      if(player_type[0] == null){
+                                          player_type[0] = last_obj;
                                       }
                                       else{
-                                          playerType[1] = last_obj;
+                                          player_type[1] = last_obj;
                                       }
                                   }
                               }
@@ -242,8 +248,15 @@ public class GameModel {
                 Math.abs(rect1.getMaxY() - rect2.getMaxY()) < thresholdY;
     }
 
-    public ArrayList<GameObject> get_player(ObjectType type){
-        return allObjects.get(this.playerType);
+    public ArrayList<GameObject> get_player(){
+
+        ArrayList<GameObject> ret = new ArrayList<>();
+        if(this.player_type[0] != null)
+            ret.addAll(allObjects.get(this.player_type[0]));
+
+        if(this.player_type[1] != null)
+            ret.addAll(allObjects.get(this.player_type[1]));
+        return ret;
     }
 
     public Rectangle raycast_object(Rectangle origin, Point direction) {

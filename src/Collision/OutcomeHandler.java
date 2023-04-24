@@ -13,7 +13,15 @@ public class OutcomeHandler implements CollisionHandler {
 
     @Override
     public PropertyTypeText handle_collision(GameObject object1, GameObject object2, Point speed, GameModel model) {
-        if (object1 == PlayerController.get_player_object() || object2 == PlayerController.get_player_object()) {
+
+        var type2 = model.player_types()[1];
+        boolean pass = false;
+        if(type2 != null){
+            if (object1.Type() == type2 ||object2.Type() == type2){
+                pass = true;
+            }
+        }
+        if (object1.Type() == model.player_types()[0] ||object2.Type() == model.player_types()[0] || pass){
 
             var objectStatus1 = model.getObjectStatus(object1.Type());
             var objectStatus2 = model.getObjectStatus(object2.Type());
