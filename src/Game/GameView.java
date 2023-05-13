@@ -6,6 +6,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+/**
+ * Screen for the Game
+ */
 public class GameView extends JFrame {
 
     public ArrayList<Rectangle> quads = new ArrayList<>();
@@ -20,6 +23,11 @@ public class GameView extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+
+    /**
+     * Add the game objects to the game view
+     * @param gameObjects all the objects for the map
+     */
     public void add_objects(ArrayList<GameObject> gameObjects) {
         Point p = new Point(0,0);
         for (int i = 0; i < gameObjects.size(); i++) {
@@ -28,11 +36,5 @@ public class GameView extends JFrame {
             gameObjects.get(i).update(new Point(0,0));
         }
         repaint();
-    }
-
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-       // LineRenderer.draw_border_rectangle(g, this.quads);
     }
 }

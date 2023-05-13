@@ -1,37 +1,70 @@
 package Game;
 
 import Collision.*;
-import Object.GameObject;
-import Object.ObjectStatus;
-import Object.ObjectType;
-import Object.TextModel;
+import Object.*;
 
 import java.awt.*;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.HashMap;
-import Object.*;
 
+
+/**
+ * Has most of the logic of the game as methods that is being used by the Player Controller.
+ */
 public class GameModel {
+    /**
+     * Width of every Game Object
+     */
     public static final int objectWidth = 32;
+    /**
+     * Height of every Game Object
+     */
     public static final int objectHeight = 32;
+    /**
+     * The status of every object type that exist.
+     */
     private final HashMap<ObjectType, ObjectStatus> objectStatus = new HashMap<>();
+
+    /**
+     * First Collision handler, if this one cannot handle the collision, it has a reference to next CollisionHandler
+     */
     private final CollisionHandler collision_handler;
+    /**
+     * text objects that can be first in a sentence. Used to check for new attributes.
+     */
     private final ArrayList<TextObject> txt_object_type = new ArrayList<TextObject>();
-    private ObjectType[] player_type = new ObjectType[2];
+    /**
+     * Player object can have up to 2 different Object types. Meaning it could be many objects and still they are all considered the player.
+     */
+    private final ObjectType[] player_type = new ObjectType[2];
     public ObjectType[] player_types(){return player_type;}
-    private HashMap<ObjectType, ArrayList<GameObject>> allObjects = new HashMap<ObjectType, ArrayList<GameObject>>();
+    /**
+     * Every Object in existence in this map
+     */
+    private final HashMap<ObjectType, ArrayList<GameObject>> allObjects = new HashMap<ObjectType, ArrayList<GameObject>>();
+
+    /**
+     * All the available maps that is left.
+     */
+    private ArrayList<GameMap> maps = new ArrayList<>();
 
     public CollisionHandler collision_handler() {
         return collision_handler;
     }
 
+    /**
+     * Our GameView
+     */
     GameView view;
+    /**
+     * Our Quad tree root. that has all objects.
+     */
     Quadtree root;
-    private final TextModel textModel;
 
-    public GameModel(GameView view) {
+    public GameModel(GameView view, ArrayList<GameMap> maps) {
         this.view = view;
+        this.maps = maps;
         root = new Quadtree(5, new Rectangle(0, 0, 1920, 1080), null);
 
         objectStatus.put(ObjectType.KEY, new ObjectStatus(ObjectType.KEY));
@@ -52,21 +85,25 @@ public class GameModel {
         allObjects.put(ObjectType.DOOR, new ArrayList<>());
         allObjects.put(ObjectType.TEXT, new ArrayList<>());
 
-        this.textModel = new TextModel();
 
-        CollisionHandler collision_handler = new FloatHandler();
+        CollisionHandler float_handler = new FloatHandler();
         CollisionHandler outcome_handler = new OutcomeHandler();
         CollisionHandler destroy_handler = new DestroyHandler();
         CollisionHandler blocker_handler = new BlockerHandler();
 
-        collision_handler.set_next_handler(outcome_handler);
+        float_handler.set_next_handler(outcome_handler);
         outcome_handler.set_next_handler(destroy_handler);
         destroy_handler.set_next_handler(blocker_handler);
 
-        this.collision_handler = collision_handler;
+        this.collision_handler = float_handler;
         default_status();
 
     }
+
+    /**
+     * Default status for the attributes, push, sink, open etc.
+     * default only text is pushable and rest is cleared.
+     */
     private void default_status(){
         for(var status: objectStatus.values()){
             status.clear_all_property();
@@ -78,18 +115,30 @@ public class GameModel {
         return objectStatus.get(type);
     }
 
+    /**
+     * When you win a level, Start a new one directly
+     */
     public void win_level() {
-
+        start_new_level();
     }
-
+    /**
+     * When you lose a level, Replay it
+     */
     public void lose_level(){
 
     }
-
+    /**
+     * Checking for collision with the objects
+     * @param rect the rectangle checking with.
+     * @param startFrom our starting quadtree, so we dont have to start from beginning.
+     */
     public ArrayList<GameObject> intersect(Rectangle rect, Quadtree startFrom){
         return intersect(rect.x, rect.y, rect.width, rect.height, startFrom);
     }
 
+    /**
+     * same as above but you write in x,y,width,height instead of a rectangle.
+     */
     public ArrayList<GameObject> intersect(int x, int y, int width, int height, Quadtree startFrom) {
 
         Rectangle toCheck = new Rectangle(x, y, width, height);
@@ -103,7 +152,6 @@ public class GameModel {
         if(gameObjects == null) // search area was out of frame
             return null;
 
-
         ArrayList<GameObject> objectsIntersect = new ArrayList<>();
         for (int i = 0; i < gameObjects.size(); i++) {
             if (toCheck.intersects(gameObjects.get(i).getRectangle()))
@@ -112,12 +160,28 @@ public class GameModel {
         return objectsIntersect;
     }
 
+    /**
+     *
+     * Attaches the key listener from PlayerController to View
+     */
     public void attach_keyListener(KeyListener l) {
         this.view.addKeyListener(l);
     }
 
-    public void start_new_level(GameMap map) {
+
+    /**
+     * deletes current level and starts a new one
+     */
+    public void start_new_level() {
         root.clear();
+        if(maps.size() == 0){
+            // no more maps
+            return;
+        }
+
+        GameMap map = maps.get(0);
+        maps.remove(0);
+
         for (int i = 0; i < map.objects.size(); i++) {
             GameObject ob = map.objects.get(i);
             allObjects.get(map.objects.get(i).Type()).add(ob);
@@ -135,6 +199,9 @@ public class GameModel {
 
     }
 
+    /**
+     * Every time a text object moves, we update all attributes for the objects again.
+     */
     public void update_text_attributes(){
         default_status();
         player_type[0] = null;
@@ -142,7 +209,11 @@ public class GameModel {
         check_text_attribute(true);
         check_text_attribute(false);
     }
-
+    /**
+     * Checks attributes in a  row manner or vertical.
+     * Attributes can take effect both if written down or written to the right.
+     * @param checkX depending on if it is false or true, we check row or vertically.
+     */
     private void check_text_attribute(boolean checkX) {
 
         for (TextObject one: this.txt_object_type){
@@ -243,10 +314,7 @@ public class GameModel {
         }
     }
 
-    public boolean check_position_Y_between_rect(Rectangle rect1, Rectangle rect2,int thresholdY){
-        return Math.abs(rect1.getMinY() - rect2.getMinY()) < thresholdY ||
-                Math.abs(rect1.getMaxY() - rect2.getMaxY()) < thresholdY;
-    }
+
 
     public ArrayList<GameObject> get_player(){
 
@@ -258,7 +326,10 @@ public class GameModel {
             ret.addAll(allObjects.get(this.player_type[1]));
         return ret;
     }
-
+    /**
+     * Used to check if an object hits something without it actually hit it but very close to hitting it
+     * @param direction the speed the object moves in.
+     */
     public Rectangle raycast_object(Rectangle origin, Point direction) {
         int width = Math.abs(direction.x) + Math.abs(direction.y) * GameModel.objectWidth;
         int height = GameModel.objectHeight * Math.abs(direction.x) + Math.abs(direction.y);
@@ -278,8 +349,19 @@ public class GameModel {
         return new Rectangle(xPos, yPos, width, height);
     }
 
+    /**
+     * Checks if two rectangles have the same y position.
+     * @param thresholdY The maximum y position they can differ.
+     */
+    public boolean check_position_Y_between_rect(Rectangle rect1, Rectangle rect2,int thresholdY){
+        return Math.abs(rect1.getMinY() - rect2.getMinY()) < thresholdY ||
+                Math.abs(rect1.getMaxY() - rect2.getMaxY()) < thresholdY;
+    }
 
-
+    /**
+     * Checks if two rectangles have the same x position.
+     * @param thresholdX The maximum position x they can differ.
+     */
     public boolean check_position_X_between_rect(Rectangle rectangle, Rectangle rectangle1, int thresholdX) {
         return Math.abs(rectangle.getMinX() - rectangle1.getMinX()) < thresholdX ||
                 Math.abs(rectangle.getMaxX() - rectangle1.getMaxX()) < thresholdX;

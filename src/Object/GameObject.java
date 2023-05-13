@@ -6,11 +6,28 @@ import Game.GameModel;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-
+/**
+ * All objects within the screen must extend this class
+ */
 public class GameObject extends JComponent implements MovingObject {
+    /**
+     * the position of the object
+     * being updated in the update function
+     */
     protected int x, y;
+    /**
+     * GameModel has the width and height every object must have.
+     * but it sets to 0 when destroyed
+     */
     protected int width, height;
+    /**
+     * The type of object
+     * To know which kind of special attributes it has.
+     */
     protected ObjectType type;
+    /**
+     * unique way to be drawn depending on the object type.
+     */
     protected DrawObject objectDrawing;
 
 
@@ -18,7 +35,6 @@ public class GameObject extends JComponent implements MovingObject {
         return type;
     }
 
-    protected Color color;
     public ArrayList<Quadtree> quads = new ArrayList<>();
 
     public GameObject(int x, int y, ObjectType type) {
@@ -45,10 +61,6 @@ public class GameObject extends JComponent implements MovingObject {
         this.height = height;
     }
 
-    public void set_val(int x, int y) {
-        set_val(x, y, width, height);
-    }
-
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -56,7 +68,10 @@ public class GameObject extends JComponent implements MovingObject {
         if(objectDrawing != null)
             objectDrawing.onPaint(g);
     }
-
+    /**
+     * Update the position of the game object in the game view
+     * Update the quad references.
+     */
     @Override
     public void update(Point speed) {
         this.x += speed.x;
@@ -67,6 +82,9 @@ public class GameObject extends JComponent implements MovingObject {
         repaint();
     }
 
+    /**
+     * removes the object from the quad tree and set the width, height to zero and repainting.
+     */
     public void destroy(){
         for (Quadtree q: quads)
             q.remove(this);

@@ -4,10 +4,15 @@ import Game.GameModel;
 
 import java.awt.*;
 import java.util.ArrayList;
-
+/**
+ * All the operator text, those that gives meaning to a sentence
+ */
 public class TextObject extends GameObject {
-    private String text;
-    private GameModel gm;
+    private final String text;
+    private final GameModel gm;
+    /**
+     * Used as a way to know if the sentence position is valid.
+     */
     private int type = 0;
 
 
@@ -46,9 +51,8 @@ public class TextObject extends GameObject {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.setColor(Color.BLACK);
-        g.setFont(new Font("Arial", Font.BOLD, 10));
+        g.setFont(new Font("Arial", Font.BOLD, 12));
         FontMetrics fm = g.getFontMetrics();
-        g.setFont(g.getFont().deriveFont(Font.BOLD));
         int textWidth = fm.stringWidth(text);
 
         int x = (width - textWidth) / 2;
@@ -58,8 +62,10 @@ public class TextObject extends GameObject {
         g.drawString(text, x, y);
     }
 
-    public int object_type_txt(){return  this.type;}
-
+    public int object_type_txt(){return this.type;}
+    /**
+     * Checks for text object to the right of it origin
+     */
     public TextObject check_attribute_X(GameModel model){
         ArrayList<GameObject> objects =model.intersect(model.raycast_object(getRectangle(), new Point(1,0)), quads.get(0));
 
@@ -71,7 +77,9 @@ public class TextObject extends GameObject {
         }
         return null;
     }
-
+    /**
+     * Checks for text object down of its origin.
+     */
     public TextObject check_attribute_Y(GameModel model){
         ArrayList<GameObject> objects =model.intersect(model.raycast_object(getRectangle(), new Point(0,1)), quads.get(0));
 

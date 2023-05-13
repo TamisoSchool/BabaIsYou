@@ -1,16 +1,18 @@
 package Collision;
 
 import Game.GameModel;
-import Game.PlayerController;
 import Object.GameObject;
-import Object.ObjectType;
 import Object.PropertyTypeText;
 
 import java.awt.*;
-
+/**
+ * Third in the collision handler.
+ */
 public class OutcomeHandler implements CollisionHandler {
     private CollisionHandler next_handler;
-
+    /**
+     * Outcome handler, checks for winning conditions or losing conditions for the player.
+     */
     @Override
     public PropertyTypeText handle_collision(GameObject object1, GameObject object2, Point speed, GameModel model) {
 
@@ -40,7 +42,7 @@ public class OutcomeHandler implements CollisionHandler {
                     boolean win2 = objectStatus2.get_property(PropertyTypeText.WIN);
 
                     if(win1 || win2){
-                        // win
+                        model.win_level();
                         return PropertyTypeText.WIN;
                     }
 

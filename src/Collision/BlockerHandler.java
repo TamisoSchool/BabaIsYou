@@ -8,13 +8,14 @@ import Object.PropertyTypeText;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-
+/**
+ * Last in the chain of collection
+ */
 public class BlockerHandler implements CollisionHandler {
     private CollisionHandler next_handler;
-    private static Set<GameObject> objects_update = new HashSet<GameObject>();
+    private static final Set<GameObject> objects_update = new HashSet<GameObject>();
     public static Set<GameObject> object_update_push()
     {
         Set<GameObject> gg = new HashSet<GameObject>(objects_update);
@@ -22,7 +23,9 @@ public class BlockerHandler implements CollisionHandler {
         return gg;
     }
 
-
+    /**
+     * Check if the object is blocked or pushable
+     */
     @Override
     public PropertyTypeText handle_collision(GameObject object1, GameObject object2, Point speed, GameModel model) {
         ObjectStatus status2 = model.getObjectStatus(object2.Type());

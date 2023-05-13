@@ -4,10 +4,15 @@ import Game.GameModel;
 import Object.*;
 
 import java.awt.*;
-
+/**
+ * Number Two on the chain
+ */
 public class DestroyHandler implements CollisionHandler {
     private CollisionHandler next_handler;
 
+    /**
+     * collision handler that accounts for all the ways the objects can be destroyed.
+     */
     @Override
     public PropertyTypeText handle_collision(GameObject object1, GameObject object2, Point speed, GameModel model) {
         var objectStatus1 = model.getObjectStatus(object1.Type());

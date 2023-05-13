@@ -3,10 +3,14 @@ package Collision;
 import Game.GameModel;
 import Object.*;
 import java.awt.*;
-
+/**
+ * First in the collection chain.
+ */
 public class FloatHandler implements CollisionHandler {
     private CollisionHandler next_handler;
-
+    /**
+     * collision handler checking if they are touching.
+     */
     @Override
     public PropertyTypeText handle_collision(GameObject object1, GameObject object2, Point speed, GameModel model) {
         var objectStatus1 = model.getObjectStatus(object1.Type());

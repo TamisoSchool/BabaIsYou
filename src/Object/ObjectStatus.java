@@ -1,10 +1,18 @@
 package Object;
 
 import java.util.HashMap;
-import java.util.Iterator;
-
+/**
+ * Every object type with every status possible to have.
+ */
 public class ObjectStatus {
-    public HashMap<PropertyTypeText, Boolean> status = new HashMap();
+    /**
+     * Property like melt, hot etc.
+     * used for collision with objects.
+     */
+    private final HashMap<PropertyTypeText, Boolean> status = new HashMap();
+    /**
+        * status of specific object type
+     */
     public final ObjectType objectType;
 
     public ObjectStatus(ObjectType objectType){
