@@ -6,6 +6,8 @@ import Object.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
@@ -15,7 +17,7 @@ import java.util.ArrayList;
  */
 public class PlayerController implements KeyListener, MovingObject {
     GameModel model;
-
+    private static boolean pause = false;
     /**
      * Speed of the character in this frame
      */
@@ -29,16 +31,24 @@ public class PlayerController implements KeyListener, MovingObject {
      */
     ArrayList<Integer> dir = new ArrayList<Integer>();
 
-    public PlayerController(GameModel model) {
+    public Timer game_update;
+
+    boolean game_on = false;
+
+    public PlayerController(GameModel model, OnGameView gmListeners) {
         this.model = model;
 
         Timer gameUpdate = new Timer(10, e -> {
-            this.update(new Point(0,0));
+            update(new Point());
         });
-        gameUpdate.start();
+        this.game_update = gameUpdate;
+        gmListeners.on_start_menu_add(e -> {
+            this.model.start_new_level();
+            gameUpdate.start();
+            game_on = true;
+        });
         model.attach_keyListener(this);
     }
-
     @Override
     public void keyTyped(KeyEvent e) {
     }
@@ -46,6 +56,9 @@ public class PlayerController implements KeyListener, MovingObject {
     @Override
     public void keyPressed(KeyEvent e) {
         int keycode = e.getKeyCode();
+        if(!game_on)
+            return;
+
         switch (keycode) { // check for a valid key to be pressed
             case KeyEvent.VK_UP -> {
                 if (!dir.contains(KeyEvent.VK_UP))
@@ -67,6 +80,9 @@ public class PlayerController implements KeyListener, MovingObject {
                 if (!dir.contains(KeyEvent.VK_RIGHT))
                     dir.add(KeyEvent.VK_RIGHT);
                 point_speed = new Point(1, 0);
+            }
+            case KeyEvent.VK_ESCAPE -> {
+                this.model.open_menu();
             }
         }
     }
@@ -103,7 +119,9 @@ public class PlayerController implements KeyListener, MovingObject {
      */
     @Override
     public void update(Point point) {
+
         if (is_moving()) { // Is moving
+
             ArrayList<GameObject> player_objects = this.model.get_player();
             for(GameObject player_object: player_objects) { // player can be multiplie objects, not implemented in the game
                 Rectangle playerRayCast = this.model.raycast_object(player_object.getRectangle(), point_speed);

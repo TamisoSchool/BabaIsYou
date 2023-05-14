@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 
 /**
@@ -65,7 +66,7 @@ public class GameModel {
     public GameModel(GameView view, ArrayList<GameMap> maps) {
         this.view = view;
         this.maps = maps;
-        root = new Quadtree(5, new Rectangle(0, 0, 1920, 1080), null);
+        root = new Quadtree(5, new Rectangle(0, 0, GameView.SCREEN_WIDTH, GameView.SCREEN_HEIGHT), null);
 
         objectStatus.put(ObjectType.KEY, new ObjectStatus(ObjectType.KEY));
         objectStatus.put(ObjectType.WALL, new ObjectStatus(ObjectType.WALL));
@@ -173,7 +174,20 @@ public class GameModel {
      * deletes current level and starts a new one
      */
     public void start_new_level() {
+        Iterator<ArrayList<GameObject>> it = allObjects.values().iterator();
+        while (it.hasNext()){
+            ArrayList<GameObject> objects = it.next();
+            for(GameObject o: objects){
+                view.remove(o);
+                o.destroy();
+            }
+            objects.clear();
+        }
+        this.txt_object_type.clear();
+
+        view.repaint();
         root.clear();
+        root = new Quadtree(0, new Rectangle(0,0, GameView.SCREEN_WIDTH, GameView.SCREEN_HEIGHT), null);
         if(maps.size() == 0){
             // no more maps
             return;
@@ -184,19 +198,16 @@ public class GameModel {
 
         for (int i = 0; i < map.objects.size(); i++) {
             GameObject ob = map.objects.get(i);
-            allObjects.get(map.objects.get(i).Type()).add(ob);
-            root.insert(map.objects.get(i));
+            allObjects.get(ob.Type()).add(ob);
+            root.insert(ob);
             if(ob instanceof TextObject){
                 if(((TextObject)ob).object_type_txt() == 0){
                     this.txt_object_type.add((TextObject) ob);
                 }
             }
         }
-        view.quads = root.all_rect();
         view.add_objects(map.objects);
         update_text_attributes();
-        int x = 5;
-
     }
 
     /**
@@ -365,5 +376,9 @@ public class GameModel {
     public boolean check_position_X_between_rect(Rectangle rectangle, Rectangle rectangle1, int thresholdX) {
         return Math.abs(rectangle.getMinX() - rectangle1.getMinX()) < thresholdX ||
                 Math.abs(rectangle.getMaxX() - rectangle1.getMaxX()) < thresholdX;
+    }
+
+    public void open_menu(){
+
     }
 }

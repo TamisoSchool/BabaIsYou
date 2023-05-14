@@ -7,8 +7,8 @@ import java.util.ArrayList;
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws InterruptedException {
+        PlayerController player;
         GameView gv = new GameView();
 
         GameMap map1 = new GameMap();
@@ -17,7 +17,7 @@ public class Main {
 
         GameModel gm = new GameModel(gv, maps);
 
-        PlayerController player = new PlayerController(gm);
+        player = new PlayerController(gm, gv);
 
 
 
@@ -47,17 +47,15 @@ public class Main {
 
         map1.objects.add(player_object);
 
-        map2.objects.addAll(GameMap.rectangle_border(10, 11, ObjectType.WALL, 10, 10));
-        map2.objects.addAll(GameMap.rectangle_border(13, 12, ObjectType.FLAG, 1, 0));
-        map2.objects.addAll(GameMap.rectangle_border(4, 4, ObjectType.WALL, 10, 5));
+        map2.objects.addAll(GameMap.rectangle_border(5, 5, ObjectType.WALL, 10, 10));
+        map2.objects.addAll(GameMap.rectangle_border(7, 7, ObjectType.FLAG, 1, 0));
+        map2.objects.addAll(GameMap.rectangle_border(0, 0, ObjectType.WALL, 10, 5));
 
-        map2.objects.add(GameMap.generate_word_object(5, 5, ObjectType.FLAG, gm));
-        map2.objects.add(GameMap.generate_word_object(20, 20, PropertyTypeText.WIN, gm));
-        map2.objects.addAll(GameMap.sentence_generator_grid(30, 30, ObjectType.BABA, OperatorText.IS, PropertyTypeText.YOU, gm, Direction.Down));
-        map2.objects.addAll(GameMap.sentence_generator_grid(14, 12, ObjectType.WALL, OperatorText.IS, PropertyTypeText.STOP, gm, Direction.Down));
+        map2.objects.add(GameMap.generate_word_object(0, 0, ObjectType.FLAG, gm));
+        map2.objects.add(GameMap.generate_word_object(10, 10, PropertyTypeText.WIN, gm));
+        map2.objects.addAll(GameMap.sentence_generator_grid(4, 4, ObjectType.BABA, OperatorText.IS, PropertyTypeText.YOU, gm, Direction.Down));
+        map2.objects.addAll(GameMap.sentence_generator_grid(18, 12, ObjectType.WALL, OperatorText.IS, PropertyTypeText.STOP, gm, Direction.Down));
         GameObject map2_player = new GameObject(16*GameModel.objectWidth, 13*GameModel.objectHeight, ObjectType.BABA);
         map2.objects.add(map2_player);
-        gm.start_new_level();
-
     }
 }
