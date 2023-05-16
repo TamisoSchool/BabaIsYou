@@ -33,8 +33,11 @@ public class PlayerController implements KeyListener, MovingObject {
 
     public Timer game_update;
 
-    boolean game_on = false;
-
+    private boolean game_on = false;
+    /**
+     * Creates a timer
+     * timer start at button press
+     */
     public PlayerController(GameModel model, OnGameView gmListeners) {
         this.model = model;
 
@@ -45,6 +48,10 @@ public class PlayerController implements KeyListener, MovingObject {
         gmListeners.on_start_menu_add(e -> {
             this.model.start_new_level();
             gameUpdate.start();
+            game_on = true;
+        });
+
+        gmListeners.on_resume_menu_add(e -> {
             game_on = true;
         });
         model.attach_keyListener(this);
@@ -82,7 +89,8 @@ public class PlayerController implements KeyListener, MovingObject {
                 point_speed = new Point(1, 0);
             }
             case KeyEvent.VK_ESCAPE -> {
-                this.model.open_menu();
+                    this.model.open_menu();
+                    game_on = false;
             }
         }
     }
@@ -108,6 +116,7 @@ public class PlayerController implements KeyListener, MovingObject {
             case KeyEvent.VK_RIGHT -> {
                 point_speed = new Point(1, 0);
             }
+
         }
     }
 

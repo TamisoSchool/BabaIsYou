@@ -2,9 +2,11 @@ package Game;
 
 import Collision.*;
 import Object.*;
+import org.w3c.dom.css.Rect;
 
 import java.awt.*;
 import java.awt.event.KeyListener;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -58,10 +60,16 @@ public class GameModel {
      * Our GameView
      */
     GameView view;
+
     /**
      * Our Quad tree root. that has all objects.
      */
     Quadtree root;
+
+    /**
+     * refrence to current map, used for resetting level
+     */
+    GameMap current_map;
 
     public GameModel(GameView view, ArrayList<GameMap> maps) {
         this.view = view;
@@ -122,12 +130,7 @@ public class GameModel {
     public void win_level() {
         start_new_level();
     }
-    /**
-     * When you lose a level, Replay it
-     */
-    public void lose_level(){
 
-    }
     /**
      * Checking for collision with the objects
      * @param rect the rectangle checking with.
@@ -169,11 +172,24 @@ public class GameModel {
         this.view.addKeyListener(l);
     }
 
-
     /**
      * deletes current level and starts a new one
      */
-    public void start_new_level() {
+    public void start_new_level(){
+        current_map = new GameMap();
+        GameMap c = maps.get(0);
+        for(int i = 0; i < c.objects.size(); i++){
+            Rectangle2D rect = c.objects.get(i).getRectangle();
+            GameObject ob = new GameObject((int)rect.getX(), (int)rect.getY(), c.objects.get(i).Type());
+            current_map.objects.add(ob);
+        }
+        maps.remove(0);
+        start_level(c);
+    }
+    /**
+     * start specific level
+     */
+    private void start_level(GameMap map) {
         Iterator<ArrayList<GameObject>> it = allObjects.values().iterator();
         while (it.hasNext()){
             ArrayList<GameObject> objects = it.next();
@@ -188,16 +204,10 @@ public class GameModel {
         view.repaint();
         root.clear();
         root = new Quadtree(0, new Rectangle(0,0, GameView.SCREEN_WIDTH, GameView.SCREEN_HEIGHT), null);
-        if(maps.size() == 0){
-            // no more maps
-            return;
-        }
-
-        GameMap map = maps.get(0);
-        maps.remove(0);
 
         for (int i = 0; i < map.objects.size(); i++) {
             GameObject ob = map.objects.get(i);
+            ob.revert_destroy();
             allObjects.get(ob.Type()).add(ob);
             root.insert(ob);
             if(ob instanceof TextObject){
@@ -208,6 +218,7 @@ public class GameModel {
         }
         view.add_objects(map.objects);
         update_text_attributes();
+        int x = 5;
     }
 
     /**
@@ -379,6 +390,6 @@ public class GameModel {
     }
 
     public void open_menu(){
-
+        view.open_menu_esc();
     }
 }

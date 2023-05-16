@@ -93,6 +93,12 @@ public class GameObject extends JComponent implements MovingObject {
         repaint();
     }
 
+    public void revert_destroy(){
+        this.width = GameModel.objectWidth;
+        this.height = GameModel.objectHeight;
+        repaint();
+    }
+
     public void set_object_type(ObjectType newType){
         this.type = newType;
         switch (newType){

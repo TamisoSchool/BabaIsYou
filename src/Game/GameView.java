@@ -9,24 +9,25 @@ import java.util.ArrayList;
 
 /**
  * Screen for the Game
+ * Mouse input
  */
 public class GameView extends JFrame implements OnGameView {
 
-    public ArrayList<Rectangle> quads = new ArrayList<>();
     public final static int SCREEN_WIDTH = 800;
     public final static int SCREEN_HEIGHT = 800;
 
     public final static int WIDTH_BTN_MENU = 100;
     public final static int HEIGHT_BTN_MENU = 100;
 
-    ArrayList<ActionListener> on_resume = new ArrayList<>();
-    ArrayList<ActionListener> on_start = new ArrayList<>();
+    private ArrayList<ActionListener> on_resume = new ArrayList<>();
+    private ArrayList<ActionListener> on_start = new ArrayList<>();
+    private ArrayList<ActionListener> on_reset = new ArrayList<>();
 
-    JButton resume_btn;
-    JButton start_btn;
-    JButton quit_btn;
+    private JButton resume_btn;
+    private JButton start_btn;
+    private JButton quit_btn;
 
-    Point mouse_start = new Point();
+    private Point mouse_start = new Point();
 
 
     public GameView() {
@@ -38,11 +39,12 @@ public class GameView extends JFrame implements OnGameView {
 
 
         this.resume_btn = create_button(0, "Resume", e -> {
-            for(ActionListener s: on_start){
+            for(ActionListener s: on_resume){
                 s.actionPerformed(e);
             }
             menu_toggle(false);
         });
+
 
         this.start_btn = create_button(0, "Start", e -> {
             for(ActionListener s: on_start){
@@ -50,11 +52,11 @@ public class GameView extends JFrame implements OnGameView {
             }
             menu_toggle(false);
             start_btn.setVisible(false);
-            repaint();
+
         });
 
        this.quit_btn = create_button(1, "Quit", e -> {
-            //this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+            this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
         });;
 
 
@@ -97,9 +99,7 @@ public class GameView extends JFrame implements OnGameView {
 
         });
 
-        add(start_btn);
-        add(quit_btn);
-        add(resume_btn);
+
 
         quit_btn.setVisible(true);
         start_btn.setVisible(true);
@@ -109,7 +109,12 @@ public class GameView extends JFrame implements OnGameView {
         setVisible(true);
         setFocusable(true);
     }
+    private void reset_frame(){
+        getContentPane().removeAll();
+        add(quit_btn);
+        add(resume_btn);
 
+    }
 
     /**
      * Add the game objects to the game view
@@ -118,13 +123,19 @@ public class GameView extends JFrame implements OnGameView {
 
     public void add_objects(ArrayList<GameObject> gameObjects) {
         Point p = new Point(0,0);
+        reset_frame();
         for (int i = 0; i < gameObjects.size(); i++) {
             add(gameObjects.get(i));
             gameObjects.get(i).update(new Point(0,0));
         }
+
         repaint();
+
     }
 
+    /**
+     * method for creating a menu button
+     */
     private JButton create_button(int column_index, String txt, ActionListener l){
         JButton btn = new JButton();
         btn.setLayout(null);
@@ -134,23 +145,38 @@ public class GameView extends JFrame implements OnGameView {
         btn.setBounds(SCREEN_WIDTH/2 - WIDTH_BTN_MENU/2, SCREEN_HEIGHT/2 - HEIGHT_BTN_MENU/2 + HEIGHT_BTN_MENU*column_index, WIDTH_BTN_MENU, HEIGHT_BTN_MENU);
         btn.addActionListener(l);
 
+        add(btn);
         return btn;
     }
 
 
-
+    /**
+     * method for creating a menu button
+     */
     private void menu_toggle(boolean toggle){
         this.quit_btn.setVisible(toggle);
         this.resume_btn.setVisible(toggle);
     }
+    /**
+     * for on start button press
+     */
     @Override
     public void on_start_menu_add(ActionListener l) {
        on_start.add(l);
     }
 
+    /**
+     * on resume button press
+     */
     @Override
     public void on_resume_menu_add(ActionListener l) {
         on_resume.add(l);
+    }
+
+
+
+    public void open_menu_esc(){
+        menu_toggle(true);
     }
 
 

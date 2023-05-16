@@ -53,7 +53,7 @@ public class Main {
 
         map2.objects.add(GameMap.generate_word_object(0, 0, ObjectType.FLAG, gm));
         map2.objects.add(GameMap.generate_word_object(10, 10, PropertyTypeText.WIN, gm));
-        map2.objects.addAll(GameMap.sentence_generator_grid(4, 4, ObjectType.BABA, OperatorText.IS, PropertyTypeText.YOU, gm, Direction.Down));
+        map2.objects.addAll(GameMap.sentence_generator_grid(4, 8, ObjectType.BABA, OperatorText.IS, PropertyTypeText.YOU, gm, Direction.Down));
         map2.objects.addAll(GameMap.sentence_generator_grid(18, 12, ObjectType.WALL, OperatorText.IS, PropertyTypeText.STOP, gm, Direction.Down));
         GameObject map2_player = new GameObject(16*GameModel.objectWidth, 13*GameModel.objectHeight, ObjectType.BABA);
         map2.objects.add(map2_player);
