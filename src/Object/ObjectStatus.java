@@ -23,14 +23,25 @@ public class ObjectStatus {
         }
     }
 
+    /**
+     * Override a specific Property
+     */
     public void set_property(PropertyTypeText property, boolean newVal){
         if(property == null)
             return;
         status.replace(property, newVal);
     }
+
+    /**
+     * Set all property to false
+     */
     public void clear_all_property(){
         status.replaceAll((k, v) -> false);
     }
+
+    /**
+     * Retrieves a specific property status.
+     */
     public boolean get_property(PropertyTypeText property){
         return status.get(property);
     }

@@ -17,7 +17,7 @@ import java.util.ArrayList;
  */
 public class PlayerController implements KeyListener, MovingObject {
     GameModel model;
-    private static boolean pause = false;
+    private static final boolean pause = false;
     /**
      * Speed of the character in this frame
      */
@@ -35,8 +35,9 @@ public class PlayerController implements KeyListener, MovingObject {
 
     private boolean game_on = false;
     /**
-     * Creates a timer
-     * timer start at button press
+     * Creates a timer for updating the game
+     * Adding on click events
+     * Attaching keylistener to gameview.
      */
     public PlayerController(GameModel model, OnGameView gmListeners) {
         this.model = model;

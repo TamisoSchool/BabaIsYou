@@ -14,6 +14,7 @@ import java.util.Iterator;
 
 /**
  * Has most of the logic of the game as methods that is being used by the Player Controller.
+ * Can communicate with GameView
  */
 public class GameModel {
     /**
@@ -59,12 +60,12 @@ public class GameModel {
     /**
      * Our GameView
      */
-    GameView view;
+    private GameView view;
 
     /**
      * Our Quad tree root. that has all objects.
      */
-    Quadtree root;
+    private Quadtree root;
 
     /**
      * refrence to current map, used for resetting level
@@ -389,6 +390,9 @@ public class GameModel {
                 Math.abs(rectangle.getMaxX() - rectangle1.getMaxX()) < thresholdX;
     }
 
+    /**
+     * Open the ingame menu.
+     */
     public void open_menu(){
         view.open_menu_esc();
     }

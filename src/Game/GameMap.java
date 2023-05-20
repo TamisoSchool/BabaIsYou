@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 /**
  * Has a list of all objects in the map.
- * static methods are only used as help methods for creating objects.
+ * Static methods are only used as help methods for creating objects more efficient
  */
 public class GameMap {
     public ArrayList<GameObject> objects = new ArrayList<>();

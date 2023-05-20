@@ -12,24 +12,60 @@ import java.util.ArrayList;
  * Mouse input
  */
 public class GameView extends JFrame implements OnGameView {
-
+    /**
+     * Screen width for frame
+     */
     public final static int SCREEN_WIDTH = 800;
+
+    /**
+     * Screen height for frame
+     */
     public final static int SCREEN_HEIGHT = 800;
 
+    /**
+     * Width for the menu buttons
+     */
     public final static int WIDTH_BTN_MENU = 100;
+
+    /**
+     * Height for the menu buttons
+     */
     public final static int HEIGHT_BTN_MENU = 100;
 
-    private ArrayList<ActionListener> on_resume = new ArrayList<>();
-    private ArrayList<ActionListener> on_start = new ArrayList<>();
-    private ArrayList<ActionListener> on_reset = new ArrayList<>();
+    /**
+     * List of method to fire when resume button is clicked
+     */
+    private final ArrayList<ActionListener> on_resume = new ArrayList<>();
 
-    private JButton resume_btn;
+    /**
+     * List of method to fire when start button is clicked
+     */
+    private final ArrayList<ActionListener> on_start = new ArrayList<>();
+
+    /**
+     * Resume button used for toggling on and off
+     */
+    private final JButton resume_btn;
+
+    /**
+     * Start button used for toggling on and off
+     */
     private JButton start_btn;
-    private JButton quit_btn;
 
-    private Point mouse_start = new Point();
+    /**
+     * Quit button used for toggling on and off
+     */
+    private final JButton quit_btn;
 
+    /**
+     * Position for when starting to press the frame.
+     * Used for moving the frame
+     */
+    private final Point mouse_start = new Point();
 
+    /**
+     * Initializes the buttons, the frame and add mouse listener to itself to be able to reposition the frame.
+     */
     public GameView() {
         super();
         setUndecorated(true);
@@ -57,7 +93,7 @@ public class GameView extends JFrame implements OnGameView {
 
        this.quit_btn = create_button(1, "Quit", e -> {
             this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-        });;
+        });
 
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -109,6 +145,12 @@ public class GameView extends JFrame implements OnGameView {
         setVisible(true);
         setFocusable(true);
     }
+
+
+    /**
+     * deletes all objects in the frame
+     * Used for deleting current map.
+     */
     private void reset_frame(){
         getContentPane().removeAll();
         add(quit_btn);
@@ -174,7 +216,9 @@ public class GameView extends JFrame implements OnGameView {
     }
 
 
-
+    /**
+     * Used to open menu.
+     */
     public void open_menu_esc(){
         menu_toggle(true);
     }

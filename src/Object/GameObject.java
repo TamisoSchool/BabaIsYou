@@ -99,6 +99,9 @@ public class GameObject extends JComponent implements MovingObject {
         repaint();
     }
 
+    /**
+     * method for changing the type of the gameobject
+     */
     public void set_object_type(ObjectType newType){
         this.type = newType;
         switch (newType){
