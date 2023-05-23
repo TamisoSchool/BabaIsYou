@@ -20,6 +20,10 @@ public class Main {
 
         player = new PlayerController(gm, gv);
 
+        gv.addKeyListener(player);
+
+        gm.attachView(gv);
+
 
 
         maps.add(map2);

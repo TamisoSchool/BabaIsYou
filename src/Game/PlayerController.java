@@ -55,7 +55,6 @@ public class PlayerController implements KeyListener, MovingObject {
         gmListeners.on_resume_menu_add(e -> {
             game_on = true;
         });
-        model.attach_keyListener(this);
     }
     @Override
     public void keyTyped(KeyEvent e) {

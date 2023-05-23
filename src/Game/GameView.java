@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * Screen for the Game
  * Mouse input
  */
-public class GameView extends JFrame implements OnGameView {
+public class GameView extends JFrame implements OnGameView, View_V {
     /**
      * Screen width for frame
      */
@@ -224,4 +224,18 @@ public class GameView extends JFrame implements OnGameView {
     }
 
 
+    @Override
+    public void on_start_map(ArrayList<GameObject> objects) {
+        add_objects(objects);
+    }
+
+    @Override
+    public void on_gameobject_update(GameObject object) {
+
+    }
+
+    @Override
+    public void open_menu() {
+        open_menu_esc();
+    }
 }

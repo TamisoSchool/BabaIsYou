@@ -2,10 +2,8 @@ package Game;
 
 import Collision.*;
 import Object.*;
-import org.w3c.dom.css.Rect;
 
 import java.awt.*;
-import java.awt.event.KeyListener;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,7 +58,7 @@ public class GameModel {
     /**
      * Our GameView
      */
-    private GameView view;
+    private ArrayList<View_V> views = new ArrayList<>();
 
     /**
      * Our Quad tree root. that has all objects.
@@ -73,7 +71,6 @@ public class GameModel {
     GameMap current_map;
 
     public GameModel(GameView view, ArrayList<GameMap> maps) {
-        this.view = view;
         this.maps = maps;
         root = new Quadtree(5, new Rectangle(0, 0, GameView.SCREEN_WIDTH, GameView.SCREEN_HEIGHT), null);
 
@@ -166,14 +163,6 @@ public class GameModel {
     }
 
     /**
-     *
-     * Attaches the key listener from PlayerController to View
-     */
-    public void attach_keyListener(KeyListener l) {
-        this.view.addKeyListener(l);
-    }
-
-    /**
      * deletes current level and starts a new one
      */
     public void start_new_level(){
@@ -186,6 +175,7 @@ public class GameModel {
         }
         maps.remove(0);
         start_level(c);
+
     }
     /**
      * start specific level
@@ -194,15 +184,11 @@ public class GameModel {
         Iterator<ArrayList<GameObject>> it = allObjects.values().iterator();
         while (it.hasNext()){
             ArrayList<GameObject> objects = it.next();
-            for(GameObject o: objects){
-                view.remove(o);
-                o.destroy();
-            }
             objects.clear();
         }
         this.txt_object_type.clear();
 
-        view.repaint();
+       // view.repaint();
         root.clear();
         root = new Quadtree(0, new Rectangle(0,0, GameView.SCREEN_WIDTH, GameView.SCREEN_HEIGHT), null);
 
@@ -217,7 +203,9 @@ public class GameModel {
                 }
             }
         }
-        view.add_objects(map.objects);
+        for(View_V view: views) {
+            view.on_start_map(map.objects);
+        }
         update_text_attributes();
         int x = 5;
     }
@@ -393,7 +381,15 @@ public class GameModel {
     /**
      * Open the ingame menu.
      */
-    public void open_menu(){
-        view.open_menu_esc();
+    public void open_menu() {
+        for (View_V v: views){
+            v.open_menu();
+        }
     }
+
+    public void attachView(View_V view) {
+        views.add(view);
+    }
+
+
 }
