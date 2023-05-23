@@ -13,6 +13,7 @@ public class Main {
 
         GameMap map1 = new GameMap();
         GameMap map2 = new GameMap();
+        GameMap map3 = new GameMap();
         ArrayList<GameMap> maps = new ArrayList<>();
 
         GameModel gm = new GameModel(gv, maps);
@@ -21,8 +22,9 @@ public class Main {
 
 
 
-        maps.add(map1);
         maps.add(map2);
+        maps.add(map1);
+        maps.add(map3);
 
 
 
