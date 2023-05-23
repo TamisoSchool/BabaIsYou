@@ -20,10 +20,12 @@ public interface View_V {
      */
     public void on_gameobject_update(GameObject object);
 
+
     /**
      * Open menu for view
      */
 
     public void open_menu();
+
 
 }
